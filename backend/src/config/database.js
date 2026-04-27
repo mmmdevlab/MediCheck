@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
+const { Sequelize } = require("sequelize");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
@@ -26,8 +26,8 @@ const testConnection = async () => {
     console.log("Database connected successfully");
   } catch (err) {
     console.error("Database connection failed:", err.message);
-    process.exit(1); // Exit if DB fails
+    process.exit(1);
   }
 };
 
-export { sequelize, testConnection };
+module.exports = { sequelize, testConnection };

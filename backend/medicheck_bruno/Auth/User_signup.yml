@@ -1,0 +1,26 @@
+info:
+  name: User_signup
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/auth/signup
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "email": "test@example.com",
+        "password": "Test1234",
+        "full_name": "Test User",
+        "role": "patient"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

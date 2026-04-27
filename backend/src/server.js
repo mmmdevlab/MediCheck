@@ -1,15 +1,16 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import { sequelize, testConnection } from "./config/database.js";
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const { sequelize, testConnection } = require("./config/database");
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const authRouter = require("./controllers/authController");
+const verifyToken = require("./middleware/verifyToken");
+const User = require("./models/User");
 
 // --Middleware--
-
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -28,9 +29,26 @@ app.get("/", (req, res) => {
   });
 });
 
-// TODO: Add auth routes
-// TODO: Add medication routes
-// TODO: Add appointment routes
+app.use("/api/auth", authRouter);
+
+app.get("/api/profile", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId, {
+      attributes: { exclude: ["password_hash"] },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    console.error("Get profile error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
@@ -41,8 +59,8 @@ const startServer = async () => {
       console.log(`Server running on http://localhost:${PORT}`);
       console.log(`Frontend URL: ${process.env.FRONTEND_URL}`);
     });
-  } catch (err) {
-    console.error("Server startup failed:", err);
+  } catch (error) {
+    console.error("Server startup failed:", error);
     process.exit(1);
   }
 };

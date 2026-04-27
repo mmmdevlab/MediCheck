@@ -1,5 +1,5 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../config/database.js";
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../config/database");
 
 const User = sequelize.define(
   "User",
@@ -35,7 +35,7 @@ const User = sequelize.define(
       allowNull: true,
     },
     date_of_birth: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: true,
     },
     current_status: {
@@ -58,4 +58,4 @@ const User = sequelize.define(
   },
 );
 
-export default User;
+module.exports = User;
