@@ -4,7 +4,14 @@ const runTest = async () => {
   try {
     await testConnection();
 
-    const tables = ["user", "appointments", "caregiver_assignments"];
+    const tables = [
+      "users",
+      "appointments",
+      "caregiver_assignments",
+      "support_requests",
+      "medical_logs",
+      "tasks",
+    ];
 
     for (const table of tables) {
       const result = await sequelize.query(
