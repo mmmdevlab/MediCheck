@@ -31,23 +31,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter);
 
-app.get("/api/profile", verifyToken, async (req, res) => {
-  try {
-    const user = await User.findByPk(req.user.userId, {
-      attributes: { exclude: ["password_hash"] },
-    });
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json({ user });
-  } catch (error) {
-    console.error("Get profile error:", error);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {

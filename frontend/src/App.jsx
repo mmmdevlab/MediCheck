@@ -1,11 +1,37 @@
+import { useContext } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthContext } from './context/AuthContext';
+import SignupForm from './components/SignupForm';
+import LoginForm from './components/LoginForm';
+
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) return <div>Loading...</div>;
+  return user ? children : <Navigate to="/auth/signin" />;
+};
+
 const App = () => {
   return (
-    <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-blue-600">MediCheck</h1>
-        <p className="text-gray-600 mt-2">Healthcare coordination platform</p>
-      </div>
-    </div>
+    <Routes>
+      {/* Public routes */}
+      <Route path="/auth/signup" element={<SignupForm />} />
+      <Route path="/auth/login" element={<LoginForm />} />
+
+      {/* Protected routes */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <div>Dashboard - You're logged in!</div>{' '}
+            {/* Temporary placeholder */}
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Redirect root to login */}
+      <Route path="/" element={<Navigate to="/auth/login" />} />
+    </Routes>
   );
 };
 

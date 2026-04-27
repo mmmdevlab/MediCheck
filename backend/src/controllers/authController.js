@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const verifyToken = require("../middleware/verifyToken");
 
 const User = require("../models/User");
 const { signupSchema, loginSchema } = require("../validations/authSchemas");
@@ -108,6 +109,23 @@ router.post("/login", async (req, res) => {
 
     console.error("Login error:", error);
     res.status(500).json({ error: "Server error during login" });
+  }
+});
+
+router.get("/me", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userId, {
+      attributes: { exclude: ["password_hash"] },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    console.error("Get profile error:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 

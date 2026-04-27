@@ -17,7 +17,7 @@ const CaregiverAssignment = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    relationshipType: {
+    relationship_type: {
       type: DataTypes.ENUM("family", "friend", "professional"),
       allowNull: false,
       defaultValue: "family",
