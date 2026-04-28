@@ -1,0 +1,15 @@
+info:
+  name: View Patient Appointments
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/api/patients/5/appointments
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

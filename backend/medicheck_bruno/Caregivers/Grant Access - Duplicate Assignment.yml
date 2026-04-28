@@ -1,0 +1,21 @@
+info:
+  name: Grant Access - Duplicate Assignment
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:3000/api/caregivers
+  auth: inherit
+  body:
+    mode: json
+    json: |
+      {
+        "caregiver_email": "jane.caregiver@example.com"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

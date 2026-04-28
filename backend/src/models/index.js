@@ -1,8 +1,8 @@
 const User = require("./User");
 const Appointment = require("./Appointment");
 const CaregiverAssignment = require("./CaregiverAssignment");
-const SupportRequest = require("./SupportRequest");
 const MedicalLog = require("./MedicalLog");
+const SupportRequest = require("./SupportRequest");
 const Task = require("./Task");
 
 User.hasMany(Appointment, {
@@ -15,6 +15,8 @@ Appointment.belongsTo(User, {
   foreignKey: "user_id",
   as: "patient",
 });
+
+// caregiver assignment - Many-to-Many
 
 User.hasMany(MedicalLog, {
   foreignKey: "user_id",
