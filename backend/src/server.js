@@ -9,9 +9,9 @@ const app = express();
 
 // Import routers
 const authRouter = require("./controllers/authController");
-const appointmentsRouter = require("./routes/appointments");
-
-// const caregiverRouter = require("./routes/caregiver");
+const appointmentsRouter = require("./routes/appointmentsRoutes");
+const caregiverRouter = require("./routes/caregiverRoutes");
+const patientRouter = require("./routes/patientRoutes");
 // const supportRouter = require("./routes/support");
 // const medicalLogRouter = require("./routes/medicalLog");
 // const taskRouter = require("./routes/task");
@@ -35,17 +35,17 @@ app.get("/", (req, res) => {
     endpoints: {
       auth: "/api/auth",
       appointments: "/api/appointments",
+      caregivers: "/api/caregivers",
+      patients: "/api/patients",
     },
   });
 });
 
-// app.get("/api/users/profile", verifyToken, userController.getUserProfile);
-// app.delete("/api/users/me", verifyToken, userController.deleteUser);
-// app.get("/api/users/:id", verifyToken, userController.getUser);
-
 // Route mounting
 app.use("/api/auth", authRouter);
 app.use("/api/appointments", appointmentsRouter);
+app.use("/api/caregivers", caregiverRouter);
+app.use("/api/patients", patientRouter);
 
 app.use((req, res) => {
   res.status(404).json({
