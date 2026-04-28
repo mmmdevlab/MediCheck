@@ -1,51 +1,98 @@
 const express = require("express");
-const cors = require("cors");
+const { initializeDatabase } = require("./config/database");
 const dotenv = require("dotenv");
-const { sequelize, testConnection } = require("./config/database");
+const cors = require("cors");
 
 dotenv.config();
 
 const app = express();
-const authRouter = require("./controllers/authController");
-const verifyToken = require("./middleware/verifyToken");
-const User = require("./models/User");
 
-// --Middleware--
+// Import routers
+const authRouter = require("./controllers/authController");
+const appointmentsRouter = require("./routes/appointments");
+
+// const caregiverRouter = require("./routes/caregiver");
+// const supportRouter = require("./routes/support");
+// const medicalLogRouter = require("./routes/medicalLog");
+// const taskRouter = require("./routes/task");
+
+// Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     credentials: true,
   }),
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --Routes--
+// Health check endpoint
 app.get("/", (req, res) => {
   res.json({
     status: "OK",
-    message: "Server is running",
+    message: "MediCheck API is running",
     timestamp: new Date().toISOString(),
+    endpoints: {
+      auth: "/api/auth",
+      appointments: "/api/appointments",
+    },
   });
 });
 
+// app.get("/api/users/profile", verifyToken, userController.getUserProfile);
+// app.delete("/api/users/me", verifyToken, userController.deleteUser);
+// app.get("/api/users/:id", verifyToken, userController.getUser);
+
+// Route mounting
 app.use("/api/auth", authRouter);
+app.use("/api/appointments", appointmentsRouter);
+
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Route not found",
+    path: req.path,
+  });
+});
+
+app.use((error, req, res, next) => {
+  console.error("Unhandled error:", error);
+
+  const message =
+    process.env.NODE_ENV === "production"
+      ? "Internal server error"
+      : error.message;
+
+  res.status(error.status || 500).json({ error: message });
+});
 
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    await testConnection();
-    await sequelize.sync({ alter: true });
-    console.log("Database synced");
+    await initializeDatabase();
+
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
-      console.log(`Frontend URL: ${process.env.FRONTEND_URL}`);
+      console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+      console.log(
+        `Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`,
+      );
     });
   } catch (error) {
-    console.error("Server startup failed:", error);
+    console.error("Server startup failed:", error.message);
+    console.error(error.stack);
     process.exit(1);
   }
 };
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  process.exit(1);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
+  process.exit(1);
+});
 
 startServer();

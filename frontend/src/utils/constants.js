@@ -1,4 +1,3 @@
-// Import Lucide React icons
 import { Frown, Meh, Smile, SmilePlus, Laugh } from 'lucide-react';
 
 export const ROLES = {

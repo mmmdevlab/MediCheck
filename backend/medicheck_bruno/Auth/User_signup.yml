@@ -13,10 +13,11 @@ http:
     type: json
     data: |-
       {
-        "email": "test@example.com",
-        "password": "Test1234",
-        "full_name": "Test User",
-        "role": "patient"
+        "email": "patient@test.com",
+        "password": "Password123",
+        "full_name": "Test Patient",
+        "role": "patient",
+        "phone": "555-0100"
       }
 
 settings:
