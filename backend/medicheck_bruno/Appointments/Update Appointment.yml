@@ -1,0 +1,22 @@
+info:
+  name: Update Appointment
+  type: http
+  seq: 3
+
+http:
+  method: PUT
+  url: http://localhost:3000/api/appointments/1
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Annual Checkup - RESCHEDULED",
+        "appointment_date": "2024-03-25T02:00:00.000Z"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

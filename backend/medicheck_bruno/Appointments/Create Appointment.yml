@@ -1,0 +1,38 @@
+info:
+  name: Create Appointment
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:3000/api/appointments
+  headers:
+    - name: Authorization
+      value: Bearer {{token}}
+      disabled: true
+    - name: Content-Type
+      value: application/json
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Annual Checkup",
+        "appointment_date": "2026-05-15T10:00:00.000Z",
+        "doctor_name": "Dr. Smith",
+        "clinic_name": "City Health Clinic",
+        "location": "123 Main St, Tokyo",
+        "notes": "Bring previous test results"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoicGF0aWVudEB0ZXN0LmNvbSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzc3MzExNzIxLCJleHAiOjE3NzczOTgxMjF9.KVlMU0To9fj8aiM6pUigvXc6eYv58nHoCZVVe0XlvHM
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
