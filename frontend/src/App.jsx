@@ -8,24 +8,32 @@ import DashboardPage from './pages/DashboardPage';
 import VisitsPage from './pages/VisitsPage';
 import TasksPage from './pages/TasksPage';
 import ProfilePage from './pages/ProfilePage';
-import SignupForm from './components/auth/SignupForm';
-import LoginForm from './components/auth/LoginForm';
 
 const App = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
+
+  // Show loading while checking token
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   const isLoggedIn = !!user;
 
   return (
-    <div className="min-h-screen bg-[#EEF1F5]">
-      <NavBar isLoggedIn={isLoggedIn} />
+    <div className="min-h-screen bg-background">
+      <NavBar />
 
-      <main className={user ? 'pt-14 pb-24' : ''}>
+      <main className={user ? 'pt-14 pb-20' : 'pt-14'}>
         <Routes>
-          {/* Public routes - both use AuthPage */}
           <Route path="/auth/signup" element={<AuthPage />} />
           <Route path="/auth/login" element={<AuthPage />} />
 
-          {/* redirects */}
           <Route
             path="/"
             element={
@@ -35,7 +43,7 @@ const App = () => {
               />
             }
           />
-          {/* Protected routes */}
+
           <Route
             path="/dashboard"
             element={
@@ -72,7 +80,8 @@ const App = () => {
               )
             }
           />
-          <Route path="*" element={<Navigate to="/auth/login" />} />
+
+          <Route path="*" element={<Navigate to="/auth/login" replace />} />
         </Routes>
       </main>
     </div>
