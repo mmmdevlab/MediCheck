@@ -1,6 +1,5 @@
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { NavLink, Link } from 'react-router-dom';
+import { useNavigate, NavLink, Link } from 'react-router-dom';
 import {
   HouseHeart,
   Route,
@@ -18,26 +17,23 @@ const navLinks = [
   { to: '/profile', label: 'Profile', icon: <UserRound size={22} /> },
 ];
 
-const NavBar = ({ isLoggedIn }) => {
-  const { user, logout } = useContext(AuthContext);
-
+const NavBar = () => {
+  const { user, signout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
+    signout();
     navigate('/auth/login');
   };
 
-  if (!isLoggedIn) return null;
-
   return (
     <div>
-      <header className="navbar-top flex items-center justify-between px-6 h-14 bg-white border-b border-gray-100 sticky top-0 z-50">
+      <header className="navbar-top flex items-center justify-between px-6 h-14 bg-white border-b border-gray-100 fixed top-0 left-0 right-0 z-50">
         <Link to={user ? '/dashboard' : '/auth/login'}>
           <img
             src="/MediCheck_Logo_H.svg"
             alt="MediCheck logo"
-            className="h-7"
+            className="h-10"
           />
         </Link>
 
@@ -49,28 +45,30 @@ const NavBar = ({ isLoggedIn }) => {
         )}
       </header>
 
-      {isLoggedIn && (
-        <nav className="navbar-bottom flex bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50">
-          <ul className="flex items-center justify-center h-16">
-            {navLinks.map(({ to, label, icon }) => (
-              <li key={to}>
-                <NavLink
-                  to={to}
-                  end={to === '/dashboard'}
-                  className={({ isActive }) =>
-                    isActive
-                      ? 'flex flex-col items-center gap-2 text-[#3177FE]'
-                      : 'flex flex-col items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors px-2'
-                  }
-                >
-                  {icon}
-                  <span className="text-[10px] uppercase font-bold tracking-wider">
-                    {label}
-                  </span>
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+      {user && (
+        <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+          <div className="bg-white rounded-full shadow-lg border border-gray-100 px-1 py-1 space-y-6 bg-white/80 backdrop-blur-md">
+            <ul className="flex items-center gap-1">
+              {navLinks.map(({ to, label, icon }) => (
+                <li key={to}>
+                  <NavLink
+                    to={to}
+                    end={to === '/dashboard'}
+                    className={({ isActive }) =>
+                      isActive
+                        ? 'flex flex-col items-center gap-1 px-10 py-3 rounded-full bg-primary text-white transition-all'
+                        : 'flex flex-col items-center gap-1 px-10 py-3 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all'
+                    }
+                  >
+                    {icon}
+                    <span className="text-[10px] uppercase font-bold tracking-wider">
+                      {label}
+                    </span>
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </div>
         </nav>
       )}
     </div>
