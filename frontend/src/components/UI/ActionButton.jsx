@@ -10,7 +10,7 @@ const ActionButton = ({
   ...props
 }) => {
   const baseStyles =
-    'flex items-center justify-center gap-2 rounded-full transition-all active:scale-95 flex-shrink-0 font-bold text-xs';
+    'flex items-center justify-center gap-2 rounded-full transition-all active:scale-95 flex-shrink-0 font-bold text-xs uppercase tracking-wider';
 
   const disabledStyles = disabled
     ? 'opacity-30 cursor-not-allowed grayscale active:scale-100'
@@ -26,8 +26,8 @@ const ActionButton = ({
 
   const padding =
     typeof children === 'string' || React.Children.count(children) > 1
-      ? 'px-4 py-2'
-      : 'w-9 h-9';
+      ? 'px-6 py-4'
+      : 'w-10 h-10';
 
   return (
     <button

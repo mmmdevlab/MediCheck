@@ -1,44 +1,39 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SignupForm from '../components/auth/SignupForm';
 import LoginForm from '../components/auth/LoginForm';
 import ProductInfo from '../components/auth/ProductInfo';
+import PillToggle from '../components/UI/PillToggle';
 
 const AuthPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isSignup = location.pathname === '/auth/signup';
+
+  const authOptions = [
+    { value: 'signup', label: 'Sign-Up' },
+    { value: 'login', label: 'Login' },
+  ];
+
+  const handleAuthToggle = (value) => {
+    navigate(`/auth/${value}`);
+  };
 
   return (
     <div className="min-h-screen bg-background flex">
-      <div className="w-1/2 flex p-12">
+      <div className="w-1/2 flex justify-center p-12">
         <div className="w-full max-w-md">
-          <div className="flex gap-4 mb-8">
-            <NavLink
-              to="/auth/signup"
-              className={`flex-1 py-3 px-6 rounded-full text-center font-medium transition-colors ${
-                isSignup
-                  ? 'bg-primary text-white cursor-default'
-                  : 'bg-background text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              SIGN-UP
-            </NavLink>
-            <NavLink
-              to="/auth/login"
-              className={`flex-1 py-3 px-6 rounded-full text-center font-medium transition-colors ${
-                !isSignup
-                  ? 'bg-primary text-white cursor-default'
-                  : 'bg-background text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              LOGIN
-            </NavLink>
-          </div>
+          <PillToggle
+            options={authOptions}
+            active={isSignup ? 'signup' : 'login'}
+            onSelect={handleAuthToggle}
+            className="mb-8"
+          />
 
-          <div className="bg-white p-8 rounded-2xl shadow-sm">
+          <div className="bg-white p-8 rounded-3xl shadow-sm">
             <div className="mb-6">
               <h1 className="text-3xl font-bold mb-2">Welcome to MediCheck!</h1>
-              <p className="text-primary font-semibold">
-                {isSignup ? 'SIGN-UP' : 'LOGIN'}
+              <p className="text-primary font-semibold uppercase tracking-wider text-sm">
+                {isSignup ? 'Sign-Up' : 'Login'}
               </p>
             </div>
 
@@ -48,22 +43,22 @@ const AuthPage = () => {
               {isSignup ? (
                 <>
                   Already have an account?{' '}
-                  <NavLink
-                    to="/auth/login"
-                    className="text-primary hover:text-blue-700 font-medium"
+                  <button
+                    onClick={() => navigate('/auth/login')}
+                    className="text-primary hover:text-blue-700 font-medium uppercase tracking-wide"
                   >
                     Log in
-                  </NavLink>
+                  </button>
                 </>
               ) : (
                 <>
                   Don't have an account?{' '}
-                  <NavLink
-                    to="/auth/signup"
-                    className="text-primary hover:text-blue-700 font-medium"
+                  <button
+                    onClick={() => navigate('/auth/signup')}
+                    className="text-primary hover:text-blue-700 font-medium uppercase tracking-wide"
                   >
                     Sign up
-                  </NavLink>
+                  </button>
                 </>
               )}
             </div>

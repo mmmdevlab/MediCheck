@@ -22,7 +22,7 @@ const FormInput = ({
         className={`
           w-full px-4 py-3 
           bg-background 
-          rounded-xl 
+          rounded-full 
           border-none 
           outline-none 
           text-gray-900 
