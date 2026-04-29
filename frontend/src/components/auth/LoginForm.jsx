@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import FormInput from '../UI/FormInput';
+import ActionButton from '../UI/ActionButton';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email'),
@@ -33,27 +35,30 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <input {...register('email')} placeholder="Email" type="email" />
-        {errors.email?.message && (
-          <p className="text-red-500">{errors.email.message}</p>
-        )}
-      </div>
+      <FormInput
+        label="Email"
+        type="email"
+        placeholder="JohnSmith@gmail.com"
+        register={register('email')}
+        error={errors.email?.message}
+      />
 
-      <div>
-        <input
-          {...register('password')}
-          type="password"
-          placeholder="Password"
-        />
-        {errors.password?.message && (
-          <p className="text-red-500">{errors.password.message}</p>
-        )}
-      </div>
+      <FormInput
+        label="Password"
+        type="password"
+        placeholder="***************"
+        register={register('password')}
+        error={errors.password?.message}
+      />
 
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Logging in...' : 'Log In'}
-      </button>
+      <ActionButton
+        type="submit"
+        variant="primary"
+        disabled={isSubmitting}
+        className="w-full py-3"
+      >
+        {isSubmitting ? 'Logging in...' : 'Login'}
+      </ActionButton>
     </form>
   );
 };
