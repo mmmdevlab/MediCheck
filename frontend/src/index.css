@@ -1,5 +1,22 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@theme {
+  --font-sans: 'Inter Tight', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  --color-primary: #3177fe;
+  --color-danger: #ee4444;
+  --color-background: #eef1f5;
+  --color-action: #000000;
+}
 
 * {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-sans);
+}
+
+p,
+.body-text {
+  font-family: var(--font-body);
 }
