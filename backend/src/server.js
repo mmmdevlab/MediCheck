@@ -12,8 +12,8 @@ const authRouter = require("./controllers/authController");
 const appointmentsRouter = require("./routes/appointmentsRoutes");
 const caregiverRouter = require("./routes/caregiverRoutes");
 const patientRouter = require("./routes/patientRoutes");
-// const supportRouter = require("./routes/support");
-// const medicalLogRouter = require("./routes/medicalLog");
+const supportRouter = require("./routes/support");
+const medicalLogRouter = require("./routes/medicalLogRoutes");
 // const taskRouter = require("./routes/task");
 
 // Middleware
@@ -37,6 +37,8 @@ app.get("/", (req, res) => {
       appointments: "/api/appointments",
       caregivers: "/api/caregivers",
       patients: "/api/patients",
+      support: "/api/support",
+      logs: "/api/logs",
     },
   });
 });
@@ -46,6 +48,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/appointments", appointmentsRouter);
 app.use("/api/caregivers", caregiverRouter);
 app.use("/api/patients", patientRouter);
+app.use("/api/support", supportRouter);
+app.use("/api/logs", medicalLogRouter);
 
 app.use((req, res) => {
   res.status(404).json({
