@@ -9,13 +9,15 @@ const Task = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    appointment_id: {
+    appointmentId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      field: "appointment_id",
     },
-    patient_id: {
+    patientId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: "patient_id",
     },
     title: {
       type: DataTypes.STRING(255),
@@ -25,7 +27,7 @@ const Task = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    task_type: {
+    taskType: {
       type: DataTypes.ENUM(
         "medication",
         "imaging",
@@ -37,15 +39,18 @@ const Task = sequelize.define(
       ),
       allowNull: false,
       defaultValue: "other",
+      field: "task_type",
     },
-    is_completed: {
+    isCompleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+      field: "is_completed",
     },
-    due_date: {
+    dueDate: {
       type: DataTypes.DATE,
       allowNull: true,
+      field: "due_date",
     },
   },
   {

@@ -9,19 +9,22 @@ const SupportRequest = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    appointment_id: {
+    appointmentId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      field: "appointment_id",
     },
-    patient_id: {
+    patientId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: "patient_id",
     },
-    caregiver_id: {
+    caregiverId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      field: "caregiver_id",
     },
-    request_type: {
+    requestType: {
       type: DataTypes.ENUM(
         "transport",
         "notes",
@@ -32,6 +35,7 @@ const SupportRequest = sequelize.define(
       ),
       allowNull: false,
       defaultValue: "transport",
+      field: "request_type",
     },
     status: {
       type: DataTypes.ENUM("pending", "accepted", "declined", "completed"),
@@ -42,9 +46,10 @@ const SupportRequest = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    responded_at: {
+    respondedAt: {
       type: DataTypes.DATE,
       allowNull: true,
+      field: "responded_at",
     },
   },
   {

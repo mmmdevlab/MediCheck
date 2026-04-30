@@ -9,37 +9,44 @@ const CaregiverAssignment = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    patient_id: {
+    patientId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: "patient_id",
     },
-    caregiver_id: {
+    caregiverId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: "caregiver_id",
     },
-    relationship_type: {
+    relationshipType: {
       type: DataTypes.ENUM("family", "friend", "professional"),
       allowNull: false,
       defaultValue: "family",
+      field: "relationship_type",
     },
-    access_level: {
+    accessLevel: {
       type: DataTypes.ENUM("full", "limited"),
       allowNull: false,
       defaultValue: "full",
+      field: "access_level",
     },
-    granted_at: {
+    grantedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+      field: "granted_at",
     },
-    revoked_at: {
+    revokedAt: {
       type: DataTypes.DATE,
       allowNull: true,
+      field: "revoked_at",
     },
-    is_active: {
+    isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
+      field: "is_active",
     },
   },
   {

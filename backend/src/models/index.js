@@ -1,109 +1,136 @@
 const User = require("./User");
 const Appointment = require("./Appointment");
 const CaregiverAssignment = require("./CaregiverAssignment");
-const MedicalLog = require("./MedicalLog");
 const SupportRequest = require("./SupportRequest");
+const MedicalLog = require("./MedicalLog");
 const Task = require("./Task");
 
+/*-------User Appointments one to Many-------*/
+
 User.hasMany(Appointment, {
-  foreignKey: "user_id",
+  foreignKey: "userId",
   as: "appointments",
   onDelete: "CASCADE",
 });
 
 Appointment.belongsTo(User, {
-  foreignKey: "user_id",
+  foreignKey: "userId",
   as: "patient",
 });
 
-// caregiver assignment - Many-to-Many
+/*-------User medial logs one to Many-------*/
 
 User.hasMany(MedicalLog, {
-  foreignKey: "user_id",
+  foreignKey: "userId",
   as: "medicalLogs",
   onDelete: "CASCADE",
 });
 
 MedicalLog.belongsTo(User, {
-  foreignKey: "user_id",
-  as: "user",
-});
-
-User.hasMany(Task, {
-  foreignKey: "patient_id",
-  as: "tasks",
-  onDelete: "CASCADE",
-});
-
-Task.belongsTo(User, {
-  foreignKey: "patient_id",
+  foreignKey: "userId",
   as: "patient",
 });
 
+/*-------Caregiver assignment Many to Many-------*/
+
+/*Patient side*/
 User.hasMany(CaregiverAssignment, {
-  foreignKey: "patient_id",
+  foreignKey: "patientId",
   as: "caregiverAssignments",
   onDelete: "CASCADE",
 });
 
 CaregiverAssignment.belongsTo(User, {
-  foreignKey: "patient_id",
+  foreignKey: "patientId",
   as: "patient",
 });
 
+/*Caregiver side*/
 User.hasMany(CaregiverAssignment, {
-  foreignKey: "caregiver_id",
+  foreignKey: "caregiverId",
   as: "patientAssignments",
   onDelete: "CASCADE",
 });
 
 CaregiverAssignment.belongsTo(User, {
-  foreignKey: "caregiver_id",
+  foreignKey: "caregiverId",
   as: "caregiver",
 });
 
-Appointment.hasMany(Task, {
-  foreignKey: "appointment_id",
-  as: "tasks",
-  onDelete: "CASCADE",
-});
+/*------- support request Many to One -------*/
 
-Task.belongsTo(Appointment, {
-  foreignKey: "appointment_id",
-  as: "appointment",
-});
-
-Appointment.hasMany(SupportRequest, {
-  foreignKey: "appointment_id",
-  as: "supportRequests",
-  onDelete: "CASCADE",
-});
-
-SupportRequest.belongsTo(Appointment, {
-  foreignKey: "appointment_id",
-  as: "appointment",
-});
-
+/*Patient side*/
 User.hasMany(SupportRequest, {
-  foreignKey: "patient_id",
+  foreignKey: "patientId",
   as: "createdSupportRequests",
   onDelete: "CASCADE",
 });
 
 SupportRequest.belongsTo(User, {
-  foreignKey: "patient_id",
+  foreignKey: "patientId",
   as: "patient",
 });
 
+/*Caregiver side*/
 User.hasMany(SupportRequest, {
-  foreignKey: "caregiver_id",
-  as: "receivedSupportRequests",
+  foreignKey: "caregiverId",
+  as: "assignedSupportRequests",
   onDelete: "SET NULL",
 });
 
 SupportRequest.belongsTo(User, {
-  foreignKey: "caregiver_id",
+  foreignKey: "caregiverId",
   as: "caregiver",
+});
+
+/*appointment*/
+
+Appointment.hasMany(SupportRequest, {
+  foreignKey: "appointmentId",
+  as: "supportRequests",
+  onDelete: "SET NULL",
+});
+
+SupportRequest.belongsTo(Appointment, {
+  foreignKey: "appointmentId",
+  as: "appointment",
+});
+
+/*------- Task Many to One -------*/
+
+/*Appointment*/
+Appointment.hasMany(Task, {
+  foreignKey: "appointmentId",
+  as: "tasks",
+  onDelete: "CASCADE",
+});
+
+Task.belongsTo(Appointment, {
+  foreignKey: "appointmentId",
+  as: "appointment",
+});
+
+/*Patient*/
+User.hasMany(Task, {
+  foreignKey: "patientId",
+  as: "tasks",
+  onDelete: "CASCADE",
+});
+
+Task.belongsTo(User, {
+  foreignKey: "patientId",
+  as: "patient",
+});
+
+/*------- Medical Logs -------*/
+MedicalLog.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
+
+User.hasMany(MedicalLog, {
+  foreignKey: "userId",
+  as: "medicalLogs",
 });
 
 module.exports = {

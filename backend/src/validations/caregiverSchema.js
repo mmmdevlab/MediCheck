@@ -1,7 +1,7 @@
 const { z } = require("zod");
 
 const grantAccessSchema = z.object({
-  caregiver_email: z
+  caregiverEmail: z
     .string({
       required_error: "Caregiver email is required",
       invalid_type_error: "Caregiver email must be a string",

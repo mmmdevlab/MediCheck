@@ -9,29 +9,34 @@ const Appointment = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: "user_id",
     },
     title: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
-    doctor_name: {
+    doctorName: {
       type: DataTypes.STRING(255),
       allowNull: true,
+      field: "doctor_name",
     },
-    clinic_name: {
+    clinicName: {
       type: DataTypes.STRING(255),
       allowNull: true,
+      field: "clinic_name",
     },
-    clinic_id: {
+    clinicId: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      field: "clinic_id",
     },
-    appointment_date: {
+    appointmentDate: {
       type: DataTypes.DATE,
       allowNull: false,
+      field: "appointment_date",
     },
     location: {
       type: DataTypes.STRING(500),

@@ -17,13 +17,15 @@ const User = sequelize.define(
         isEmail: true,
       },
     },
-    password_hash: {
+    passwordHash: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      field: "password_hash",
     },
-    full_name: {
+    fullName: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      field: "full_name",
     },
     role: {
       type: DataTypes.ENUM("patient", "caregiver", "clinic"),
@@ -34,21 +36,24 @@ const User = sequelize.define(
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    date_of_birth: {
+    dateOfBirth: {
       type: DataTypes.DATE,
       allowNull: true,
+      field: "date_of_birth",
     },
-    current_status: {
+    currentStatus: {
       type: DataTypes.INTEGER,
       allowNull: true,
       validate: {
         min: 1,
         max: 5,
       },
+      field: "current_status",
     },
-    status_message: {
+    statusMessage: {
       type: DataTypes.TEXT,
       allowNull: true,
+      field: "status_message",
     },
   },
   {

@@ -9,17 +9,19 @@ const MedicalLog = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: "user_id",
     },
-    feeling_score: {
+    feelingScore: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         min: 1,
         max: 5,
       },
+      field: "feeling_score",
     },
   },
   {

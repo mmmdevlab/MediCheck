@@ -8,13 +8,13 @@ const grantCaregiverAccess = async (req, res) => {
   try {
     // Validate input
     const validatedData = grantAccessSchema.parse(req.body);
-    const { caregiver_email } = validatedData;
+    const { caregiverEmail } = validatedData;
 
     const patientId = req.user.userId;
 
     const caregiver = await User.findOne({
       where: {
-        email: caregiver_email,
+        email: caregiverEmail,
         role: "caregiver",
       },
     });
@@ -33,9 +33,9 @@ const grantCaregiverAccess = async (req, res) => {
 
     const existingAssignment = await CaregiverAssignment.findOne({
       where: {
-        patient_id: patientId,
-        caregiver_id: caregiver.id,
-        is_active: true,
+        patientId: patientId,
+        caregiverId: caregiver.id,
+        isActive: true,
       },
     });
 
@@ -46,19 +46,19 @@ const grantCaregiverAccess = async (req, res) => {
     }
 
     const assignment = await CaregiverAssignment.create({
-      patient_id: patientId,
-      caregiver_id: caregiver.id,
-      is_active: true,
+      patientId: patientId,
+      caregiverId: caregiver.id,
+      isActive: true,
     });
 
     res.status(201).json({
       message: "Caregiver access granted successfully",
       assignment: {
         id: assignment.id,
-        caregiver_id: caregiver.id,
-        caregiver_name: caregiver.full_name,
-        caregiver_email: caregiver.email,
-        granted_at: assignment.access_granted_at,
+        caregiverId: caregiver.id,
+        caregiverName: caregiver.fullName,
+        caregiverEmail: caregiver.email,
+        grantedAt: assignment.grantedAt,
       },
     });
   } catch (error) {
@@ -80,26 +80,26 @@ const getMyCaregivers = async (req, res) => {
 
     const assignments = await CaregiverAssignment.findAll({
       where: {
-        patient_id: patientId,
-        is_active: true,
+        patientId: patientId,
+        isActive: true,
       },
       include: [
         {
           model: User,
           as: "caregiver",
-          attributes: ["id", "full_name", "email", "phone"],
+          attributes: ["id", "fullName", "email", "phone"],
         },
       ],
-      order: [["access_granted_at", "DESC"]],
+      order: [["grantedAt", "DESC"]],
     });
 
     const caregivers = assignments.map((a) => ({
-      assignment_id: a.id,
-      caregiver_id: a.caregiver.id,
-      name: a.caregiver.full_name,
+      assignmentId: a.id,
+      caregiverId: a.caregiver.id,
+      name: a.caregiver.fullName,
       email: a.caregiver.email,
       phone: a.caregiver.phone,
-      granted_at: a.access_granted_at,
+      grantedAt: a.grantedAt,
     }));
 
     res.status(200).json(caregivers);
@@ -121,8 +121,8 @@ const revokeCaregiverAccess = async (req, res) => {
     const assignment = await CaregiverAssignment.findOne({
       where: {
         id: assignmentId,
-        patient_id: patientId,
-        is_active: true,
+        patientId: patientId,
+        isActive: true,
       },
     });
 
@@ -132,8 +132,8 @@ const revokeCaregiverAccess = async (req, res) => {
       });
     }
 
-    assignment.is_active = false;
-    assignment.revoked_at = new Date();
+    assignment.isActive = false;
+    assignment.revokedAt = new Date();
     await assignment.save();
 
     res.status(200).json({
@@ -152,25 +152,25 @@ const getMyPatients = async (req, res) => {
 
     const assignments = await CaregiverAssignment.findAll({
       where: {
-        caregiver_id: caregiverId,
-        is_active: true,
+        caregiverId: caregiverId,
+        isActive: true,
       },
       include: [
         {
           model: User,
           as: "patient",
-          attributes: ["id", "full_name", "email", "phone"],
+          attributes: ["id", "fullName", "email", "phone"],
         },
       ],
-      order: [["access_granted_at", "DESC"]],
+      order: [["grantedAt", "DESC"]],
     });
 
     const patients = assignments.map((a) => ({
-      patient_id: a.patient.id,
-      name: a.patient.full_name,
+      patientId: a.patient.id,
+      name: a.patient.fullName,
       email: a.patient.email,
       phone: a.patient.phone,
-      access_granted_at: a.access_granted_at,
+      accessGrantedAt: a.grantedAt,
     }));
 
     res.status(200).json(patients);
@@ -191,9 +191,9 @@ const getPatientAppointments = async (req, res) => {
 
     const assignment = await CaregiverAssignment.findOne({
       where: {
-        patient_id: patientId,
-        caregiver_id: caregiverId,
-        is_active: true,
+        patientId: patientId,
+        caregiverId: caregiverId,
+        isActive: true,
       },
     });
 
@@ -204,8 +204,8 @@ const getPatientAppointments = async (req, res) => {
     }
 
     const appointments = await Appointment.findAll({
-      where: { user_id: patientId },
-      order: [["appointment_date", "ASC"]],
+      where: { userId: patientId },
+      order: [["appointmentDate", "ASC"]],
     });
 
     res.status(200).json(appointments);

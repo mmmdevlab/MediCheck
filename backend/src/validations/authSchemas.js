@@ -12,7 +12,7 @@ const passwordSchema = z
 const signupSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
-  full_name: z.string().min(2, "Full name must be at least 2 characters"),
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
   role: z.enum(["patient", "caregiver", "clinic"]).default("patient"),
   phone: z.string().optional(),
 });

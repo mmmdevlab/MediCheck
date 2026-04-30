@@ -7,8 +7,8 @@ const {
 const getAllAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.findAll({
-      where: { user_id: req.user.userId },
-      order: [["appointment_date", "ASC"]],
+      where: { userId: req.user.userId },
+      order: [["appointmentDate", "ASC"]],
     });
     res.status(200).json(appointments);
   } catch (error) {
@@ -29,7 +29,7 @@ const getAppointmentById = async (req, res) => {
       return res.status(404).json({ error: "Appointment not found" });
     }
 
-    if (appointment.user_id !== req.user.userId) {
+    if (appointment.userId !== req.user.userId) {
       return res
         .status(403)
         .json({ error: "Forbidden - not your appointment" });
@@ -48,7 +48,7 @@ const createAppointment = async (req, res) => {
 
     const appointment = await Appointment.create({
       ...validatedData,
-      user_id: req.user.userId,
+      userId: req.user.userId,
     });
 
     res.status(201).json(appointment);
@@ -79,7 +79,7 @@ const updateAppointment = async (req, res) => {
       return res.status(404).json({ error: "Appointment not found" });
     }
 
-    if (appointment.user_id !== req.user.userId) {
+    if (appointment.userId !== req.user.userId) {
       return res
         .status(403)
         .json({ error: "Forbidden - not your appointment" });
@@ -112,7 +112,7 @@ const deleteAppointment = async (req, res) => {
       return res.status(404).json({ error: "Appointment not found" });
     }
 
-    if (appointment.user_id !== req.user.userId) {
+    if (appointment.userId !== req.user.userId) {
       return res
         .status(403)
         .json({ error: "Forbidden - not your appointment" });

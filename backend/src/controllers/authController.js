@@ -33,12 +33,12 @@ router.post("/signup", async (req, res) => {
       return res.status(409).json({ error: "Email already registered" });
     }
 
-    const password_hash = await bcrypt.hash(validatedData.password, saltRounds);
+    const passwordHash = await bcrypt.hash(validatedData.password, saltRounds);
 
     const user = await User.create({
       email: validatedData.email,
-      password_hash,
-      full_name: validatedData.full_name,
+      passwordHash,
+      fullName: validatedData.fullName,
       role: validatedData.role,
       phone: validatedData.phone,
     });
@@ -50,7 +50,7 @@ router.post("/signup", async (req, res) => {
       user: {
         id: user.id,
         email: user.email,
-        full_name: user.full_name,
+        fullName: user.fullName,
         role: user.role,
       },
     });
@@ -81,7 +81,7 @@ router.post("/login", async (req, res) => {
 
     const isPasswordCorrect = await bcrypt.compare(
       validatedData.password,
-      user.password_hash,
+      user.passwordHash,
     );
 
     if (!isPasswordCorrect) {
@@ -95,7 +95,7 @@ router.post("/login", async (req, res) => {
       user: {
         id: user.id,
         email: user.email,
-        full_name: user.full_name,
+        fullName: user.fullName,
         role: user.role,
       },
     });
@@ -115,7 +115,7 @@ router.post("/login", async (req, res) => {
 router.get("/me", verifyToken, async (req, res) => {
   try {
     const user = await User.findByPk(req.user.userId, {
-      attributes: { exclude: ["password_hash"] },
+      attributes: { exclude: ["passwordHash"] },
     });
 
     if (!user) {
