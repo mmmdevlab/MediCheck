@@ -1,0 +1,38 @@
+info:
+  name: Add task to appointment
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/appointments/:appointmentId/tasks"
+  params:
+    - name: appointmentId
+      value: "1"
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Buy Amoxicillin 500mg"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+  scripts:
+    - type: tests
+      code: |-
+        test("Task created", function() {
+                  expect(res.getStatus()).to.equal(201);
+                  expect(res.getBody().task).to.have.property('id');
+                  expect(res.getBody().task.title).to.equal('Buy Amoxicillin 500mg');
+                });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

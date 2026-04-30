@@ -13,6 +13,7 @@ config:
         username: ""
         password: ""
       bypassProxy: ""
+
 bundled: false
 extensions:
   bruno:

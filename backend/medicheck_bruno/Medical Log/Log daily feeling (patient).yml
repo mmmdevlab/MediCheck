@@ -1,22 +1,23 @@
 info:
-  name: User_login
+  name: Log daily feeling (patient)
   type: http
   seq: 1
 
 http:
   method: POST
-  url: http://localhost:3000/api/auth/login
-  headers:
-    - name: Content-Type
-      value: application/json
+  url: "{{BASE_URL}}/logs"
   body:
     type: json
     data: |-
       {
-        "email": "test@example.com",
-        "password": "Test1234"
+        "feelingScore": 4
       }
   auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
 
 settings:
   encodeUrl: true

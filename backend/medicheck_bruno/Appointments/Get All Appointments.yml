@@ -5,8 +5,20 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/appointments
+  url: "{{BASE_URL}}/appointments"
   auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+  scripts:
+    - type: tests
+      code: |-
+        test("Returns array", function() {
+            expect(res.getStatus()).to.equal(200);
+            expect(res.getBody().appointments).to.be.an('array');
+          });
 
 settings:
   encodeUrl: true

@@ -5,9 +5,6 @@ info:
 
 request:
   headers:
-    - name: Authorization
-      value: Bearer {{TOKEN}}
+    - name: Content-Type
+      value: application/json
   auth: inherit
-  variables:
-    - name: TOKEN
-      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzc3MzA3MjgxLCJleHAiOjE3NzczOTM2ODF9.jT4tvapkVE1vi5TSq_bUG5tZ4Jhr6MMp-HwTCS20_d0

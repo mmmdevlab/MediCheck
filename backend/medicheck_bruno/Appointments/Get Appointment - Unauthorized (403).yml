@@ -1,11 +1,11 @@
 info:
-  name: Delete Appointment
+  name: Get Appointment - Unauthorized (403)
   type: http
-  seq: 3
+  seq: 6
 
 http:
-  method: DELETE
-  url: "{{BASE_URL}}/appointments/1"
+  method: GET
+  url: "{{BASE_URL}}/appointments/999"
   auth: inherit
 
 runtime:
@@ -15,8 +15,9 @@ runtime:
   scripts:
     - type: tests
       code: |-
-        test("Deleted successfully", function() {
-            expect(res.getStatus()).to.equal(200);
+        test("Returns 403 or 404", function() {
+            const status = res.getStatus();
+            expect([403, 404]).to.include(status);
           });
 
 settings:

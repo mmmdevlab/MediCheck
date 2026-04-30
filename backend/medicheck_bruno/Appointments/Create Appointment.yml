@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: http://localhost:3000/api/appointments
+  url: "{{BASE_URL}}/appointments"
   headers:
     - name: Authorization
       value: Bearer {{token}}
@@ -18,9 +18,9 @@ http:
     data: |-
       {
         "title": "Annual Checkup",
-        "appointment_date": "2026-05-15T10:00:00.000Z",
-        "doctor_name": "Dr. Smith",
-        "clinic_name": "City Health Clinic",
+        "appointmentDate": "2026-05-15T10:00:00.000Z",
+        "doctorName": "Dr. Smith",
+        "clinicName": "City Health Clinic",
         "location": "123 Main St, Tokyo",
         "notes": "Bring previous test results"
       }
@@ -30,6 +30,8 @@ runtime:
   variables:
     - name: token
       value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoicGF0aWVudEB0ZXN0LmNvbSIsInJvbGUiOiJwYXRpZW50IiwiaWF0IjoxNzc3MzExNzIxLCJleHAiOjE3NzczOTgxMjF9.KVlMU0To9fj8aiM6pUigvXc6eYv58nHoCZVVe0XlvHM
+    - name: BASE_URL
+      value: http://localhost:3000/api
 
 settings:
   encodeUrl: true

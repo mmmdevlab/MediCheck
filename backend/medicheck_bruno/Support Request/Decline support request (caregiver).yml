@@ -1,0 +1,35 @@
+info:
+  name: Decline support request (caregiver)
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: "{{BASE_URL}}/support-requests/:id/respond"
+  headers:
+    - name: Authorization
+      value: Bearer {{caregiver_token}}
+    - name: Content-Type
+      value: application/json
+  params:
+    - name: id
+      value: ""
+      type: path
+  body:
+    type: json
+    data: |-
+      {
+        "status": "declined"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

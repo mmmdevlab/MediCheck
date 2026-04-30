@@ -5,8 +5,13 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/caregivers
+  url: "{{BASE_URL}}/caregivers"
   auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
 
 settings:
   encodeUrl: true

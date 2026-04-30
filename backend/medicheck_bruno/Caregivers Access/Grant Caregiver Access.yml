@@ -1,0 +1,34 @@
+info:
+  name: Grant Caregiver Access
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/caregivers"
+  body:
+    type: json
+    data: |-
+      {
+        "caregiverEmail": "caregiver@test.com",
+        "relationshipType": "family"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+  scripts:
+    - type: tests
+      code: |-
+        test("Access granted", function() {
+            expect(res.getStatus()).to.equal(201);
+            expect(res.getBody().assignment).to.have.property('id');
+          });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,31 @@
+info:
+  name: Signup Caregiver
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/auth/signup"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "caregiver@test.com",
+        "password": "Password123!",
+        "fullName": "Jane Caregiver",
+        "role": "caregiver",
+        "phone": "+81 555-0200",
+        "dateOfBirth": "1985-05-20"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

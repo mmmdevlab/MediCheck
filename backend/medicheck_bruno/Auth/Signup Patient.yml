@@ -1,0 +1,41 @@
+info:
+  name: Signup Patient
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/auth/signup"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "patient@test.com",
+        "password": "Password123!",
+        "fullName": "Test Patient",
+        "role": "patient",
+        "phone": "+81 555-0100",
+        "dateOfBirth": "1990-01-15"
+      }
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+  scripts:
+    - type: tests
+      code: |-
+        test("Status is 201", function() {
+            expect(res.getStatus()).to.equal(201);
+          });
+          
+          test("Returns user and token", function() {
+            expect(res.getBody()).to.have.property('user');
+            expect(res.getBody()).to.have.property('token');
+          });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

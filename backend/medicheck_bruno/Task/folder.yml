@@ -1,7 +1,7 @@
 info:
-  name: Appointments
+  name: Task
   type: folder
-  seq: 2
+  seq: 5
 
 request:
   headers:
@@ -10,6 +10,3 @@ request:
     - name: Content-Type
       value: application/json
   auth: inherit
-  variables:
-    - name: patient_token
-      value: http://localhost:3000/api

@@ -5,8 +5,17 @@ info:
 
 http:
   method: DELETE
-  url: http://localhost:3000/api/caregivers/1
+  url: "{{BASE_URL}}/caregivers/:id"
+  params:
+    - name: id
+      value: ""
+      type: path
   auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
 
 settings:
   encodeUrl: true

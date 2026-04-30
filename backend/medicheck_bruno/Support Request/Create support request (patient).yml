@@ -1,17 +1,19 @@
 info:
-  name: Update Appointment
+  name: Create support request (patient)
   type: http
-  seq: 3
+  seq: 1
 
 http:
-  method: PUT
-  url: "{{BASE_URL}}/appointments/1"
+  method: POST
+  url: "{{BASE_URL}}/support-requests"
   body:
     type: json
     data: |-
       {
-        "title": "Annual Checkup - RESCHEDULED",
-        "appointmentDate": "2024-03-25T02:00:00.000Z"
+        "appointmentId": 501,
+        "caregiverId": 2,
+        "requestType": "transport",
+        "message": "Need a ride to the clinic"
       }
   auth: inherit
 

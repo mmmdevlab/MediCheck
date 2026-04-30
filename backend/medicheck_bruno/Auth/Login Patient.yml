@@ -1,0 +1,42 @@
+info:
+  name: Login Patient
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/auth/login"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "email": "patient@test.com",
+        "password": "Password123!"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.getStatus() === 200) {
+            bru.setEnvVar("patient_token", res.getBody().token);
+          }
+    - type: tests
+      code: |-
+        test("Login successful", function() {
+            expect(res.getStatus()).to.equal(200);
+            expect(res.getBody()).to.have.property('token');
+          });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

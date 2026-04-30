@@ -1,0 +1,33 @@
+info:
+  name: Login Caregiver
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/auth/login"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "caregiver@test.com",
+        "password": "Password123!"
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.getStatus() === 200) {
+            bru.setEnvVar("caregiver_token", res.getBody().token);
+          }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
