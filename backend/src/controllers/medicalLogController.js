@@ -1,5 +1,5 @@
-const MedicalLog = require("../models/MedicalLog");
 const User = require("../models/User");
+const MedicalLog = require("../models/MedicalLog");
 const CaregiverAssignment = require("../models/CaregiverAssignment");
 const { createMedicalLogSchema } = require("../validations/medicalLogSchema");
 const { Op } = require("sequelize");
@@ -28,13 +28,7 @@ const createMedicalLog = async (req, res) => {
     });
 
     if (existingLog) {
-      existingLog.feelingScore = validatedData.feelingScore;
-      await existingLog.save();
-
-      return res.status(200).json({
-        message: "Today's feeling updated successfully",
-        log: existingLog,
-      });
+      await existingLog.destroy();
     }
 
     const log = await MedicalLog.create({
@@ -43,7 +37,9 @@ const createMedicalLog = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Feeling logged successfully",
+      message: existingLog
+        ? "Today's feeling updated successfully"
+        : "Feeling logged successfully",
       log: log,
     });
   } catch (error) {
@@ -58,11 +54,11 @@ const createMedicalLog = async (req, res) => {
   }
 };
 
-/*------------------ Get my logs (last N days) ------------------*/
+/*------------------ Get my logs (last x days) ------------------*/
 const getMyLogs = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const days = parseInt(req.query.days) || 7; // Default 7 days
+    const days = parseInt(req.query.days) || 7;
 
     if (days < 1 || days > 30) {
       return res.status(400).json({

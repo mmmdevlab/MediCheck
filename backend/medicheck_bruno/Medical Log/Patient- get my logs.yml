@@ -1,17 +1,15 @@
 info:
-  name: Log daily feeling (patient)
+  name: "Patient: get my logs"
   type: http
-  seq: 1
+  seq: 2
 
 http:
-  method: POST
-  url: "{{BASE_URL}}/logs"
-  body:
-    type: json
-    data: |-
-      {
-        "feelingScore": 4
-      }
+  method: GET
+  url: "{{BASE_URL}}/logs?days=7"
+  params:
+    - name: days
+      value: "7"
+      type: query
   auth: inherit
 
 runtime:

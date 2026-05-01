@@ -1,5 +1,5 @@
 info:
-  name: Get patient's latest feeling (caregiver)
+  name: "Caregiver: patient's latest"
   type: http
   seq: 3
 
@@ -11,7 +11,7 @@ http:
       value: Bearer {{caregiver_token}}
   params:
     - name: patientId
-      value: ""
+      value: "{{patient_token}}"
       type: path
   auth: inherit
 

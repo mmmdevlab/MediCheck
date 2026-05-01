@@ -1,0 +1,26 @@
+info:
+  name: "Patient: log feeling"
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/logs"
+  body:
+    type: json
+    data: |-
+      {
+        "feelingScore": 4
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: BASE_URL
+      value: http://localhost:3000/api
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
