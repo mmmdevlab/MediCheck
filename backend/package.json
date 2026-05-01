@@ -15,7 +15,8 @@
   },
   "scripts": {
     "dev": "bun --watch src/server.js",
-    "start": "bun src/server.js"
+    "start": "bun src/server.js",
+    "seed": "bun src/seed.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
