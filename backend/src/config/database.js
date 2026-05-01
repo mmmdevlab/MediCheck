@@ -95,7 +95,7 @@ const initializeDatabase = async () => {
     console.log("ENUM types verified/created\n");
 
     console.log("Syncing database models...");
-    await sequelize.sync({ force: false }); // -> remember to change this { force: true } in production
+    await sequelize.sync({ force: false });
     console.log("Database models synced successfully\n");
 
     return true;

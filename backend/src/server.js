@@ -12,9 +12,10 @@ const authRouter = require("./controllers/authController");
 const appointmentsRouter = require("./routes/appointmentsRoutes");
 const caregiverRouter = require("./routes/caregiverRoutes");
 const patientRouter = require("./routes/patientRoutes");
-const supportRouter = require("./routes/support");
+const supportRouter = require("./routes/supportRoutes");
 const medicalLogRouter = require("./routes/medicalLogRoutes");
-// const taskRouter = require("./routes/task");
+const taskRouter = require("./routes/taskRoutes");
+const requestLogger = require("./middleware/requestLogger");
 
 // Middleware
 app.use(
@@ -25,6 +26,7 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(requestLogger);
 
 // Health check endpoint
 app.get("/", (req, res) => {
@@ -39,6 +41,7 @@ app.get("/", (req, res) => {
       patients: "/api/patients",
       support: "/api/support",
       logs: "/api/logs",
+      task: "/api/task",
     },
   });
 });
@@ -50,6 +53,7 @@ app.use("/api/caregivers", caregiverRouter);
 app.use("/api/patients", patientRouter);
 app.use("/api/support", supportRouter);
 app.use("/api/logs", medicalLogRouter);
+app.use("/api/task", taskRouter);
 
 app.use((req, res) => {
   res.status(404).json({

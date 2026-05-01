@@ -11,7 +11,7 @@ router.get("/:id", supportController.getSupportRequestById);
 router.put("/:id", supportController.updateSupportRequest);
 router.delete("/:id", supportController.deleteSupportRequest);
 
-router.get("/assigned/requests", supportController.getAssignedSupportRequests);
+router.get("/assigned", supportController.getAssignedSupportRequests);
 router.patch("/:id/respond", supportController.respondToSupportRequest);
 router.patch("/:id/complete", supportController.completeSupportRequest);
 
