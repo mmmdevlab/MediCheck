@@ -6,7 +6,6 @@ const { grantAccessSchema } = require("../validations/caregiverSchema");
 // PATIENT POV - Managing who has access to their data
 const grantCaregiverAccess = async (req, res) => {
   try {
-    // Validate input
     const validatedData = grantAccessSchema.parse(req.body);
     const { caregiverEmail } = validatedData;
 

@@ -14,7 +14,10 @@ http:
     type: json
     data: |-
       {
-        "title": "Buy Amoxicillin 500mg"
+        "title": "Buy Amoxicillin 500mg",
+        "description": "500mg tablets, twice daily",
+        "taskType": "medication",
+        "dueDate": "2024-12-15T10:00:00Z"
       }
   auth: inherit
 
@@ -26,10 +29,11 @@ runtime:
     - type: tests
       code: |-
         test("Task created", function() {
-                  expect(res.getStatus()).to.equal(201);
-                  expect(res.getBody().task).to.have.property('id');
-                  expect(res.getBody().task.title).to.equal('Buy Amoxicillin 500mg');
-                });
+          expect(res.getStatus()).to.equal(201);
+          expect(res.getBody().task).to.have.property('id');
+          expect(res.getBody().task.title).to.equal('Buy Amoxicillin 500mg');
+          expect(res.getBody().task.patientId).to.be.a('number');
+        });
 
 settings:
   encodeUrl: true

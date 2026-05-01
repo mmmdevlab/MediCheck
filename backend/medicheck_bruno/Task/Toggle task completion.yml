@@ -8,7 +8,7 @@ http:
   url: "{{BASE_URL}}/tasks/:taskId/toggle"
   params:
     - name: taskId
-      value: ""
+      value: "1"
       type: path
   auth: inherit
 
@@ -20,9 +20,9 @@ runtime:
     - type: tests
       code: |-
         test("Task toggled", function() {
-                  expect(res.getStatus()).to.equal(200);
-                  expect(res.getBody().task).to.have.property('isCompleted');
-                });
+          expect(res.getStatus()).to.equal(200);
+          expect(res.getBody().task).to.have.property('isCompleted');
+        });
 
 settings:
   encodeUrl: true
