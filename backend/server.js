@@ -1,21 +1,24 @@
 const express = require("express");
-const { initializeDatabase } = require("./config/database");
-const dotenv = require("dotenv");
 const cors = require("cors");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
-const app = express();
+const { sequelize } = require("./src/config/database");
 
 // Import routers
-const authRouter = require("./controllers/authController");
-const appointmentsRouter = require("./routes/appointmentsRoutes");
-const caregiverRouter = require("./routes/caregiverRoutes");
-const patientRouter = require("./routes/patientRoutes");
-const supportRouter = require("./routes/supportRoutes");
-const medicalLogRouter = require("./routes/medicalLogRoutes");
-const taskRouter = require("./routes/taskRoutes");
-const requestLogger = require("./middleware/requestLogger");
+const authRoutes = require("./src/routes/authRoutes");
+const appointmentRoutes = require("./src/routes/appointmentRoutes");
+const caregiverRoutes = require("./src/routes/caregiverRoutes");
+const patientRoutes = require("./src/routes/patientRoutes");
+const supportRoutes = require("./src/routes/supportRoutes");
+const medicalLogRoutes = require("./src/routes/medicalLogRoutes");
+const taskRoutes = require("./src/routes/taskRoutes");
+
+const requestLogger = require("./src/middleware/requestLogger");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(
@@ -41,19 +44,19 @@ app.get("/", (req, res) => {
       patients: "/api/patients",
       support: "/api/support",
       logs: "/api/logs",
-      task: "/api/task",
+      task: "/api/tasks",
     },
   });
 });
 
 // Route mounting
-app.use("/api/auth", authRouter);
-app.use("/api/appointments", appointmentsRouter);
-app.use("/api/caregivers", caregiverRouter);
-app.use("/api/patients", patientRouter);
-app.use("/api/support", supportRouter);
-app.use("/api/logs", medicalLogRouter);
-app.use("/api/task", taskRouter);
+app.use("/api/auth", authRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/caregivers", caregiverRoutes);
+app.use("/api/patients", patientRoutes);
+app.use("/api/support", supportRoutes);
+app.use("/api/logs", medicalLogRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
@@ -73,11 +76,10 @@ app.use((error, req, res, next) => {
   res.status(error.status || 500).json({ error: message });
 });
 
-const PORT = process.env.PORT || 3000;
-
 const startServer = async () => {
   try {
-    await initializeDatabase();
+    await sequelize.authenticate();
+    console.log("Database connected successfully");
 
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);

@@ -14,9 +14,10 @@
     "zod": "^4.3.6"
   },
   "scripts": {
-    "dev": "bun --watch src/server.js",
-    "start": "bun src/server.js",
-    "seed": "bun src/seed.js"
+    "dev": "bun --watch server.js",
+    "start": "bun server.js",
+    "seed": "bun seed.js",
+    "test": "bun test-connection.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

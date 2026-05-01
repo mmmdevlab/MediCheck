@@ -1,5 +1,9 @@
 const bcrypt = require("bcrypt");
-const { sequelize } = require("./config/database");
+const path = require("path");
+
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+
+const { sequelize } = require("./src/config/database");
 const {
   User,
   Appointment,
@@ -7,7 +11,7 @@ const {
   SupportRequest,
   MedicalLog,
   Task,
-} = require("./models");
+} = require("./src/models");
 
 const seedDatabase = async () => {
   try {
@@ -141,10 +145,16 @@ const seedDatabase = async () => {
     console.log(`   - ${task3.title}`);
 
     // Medical Logs (7 days)
+    console.log("Creating 7 days of medical logs...");
+
     const logs = [];
     for (let i = 6; i >= 0; i--) {
       const logDate = new Date();
       logDate.setDate(logDate.getDate() - i);
+
+      const randomHour = Math.floor(Math.random() * 12) + 8;
+      const randomMinute = Math.floor(Math.random() * 60);
+      logDate.setHours(randomHour, randomMinute, 0, 0);
 
       const log = await MedicalLog.create({
         userId: patient.id,
@@ -152,8 +162,10 @@ const seedDatabase = async () => {
         createdAt: logDate,
       });
       logs.push(log);
+      console.log(
+        `   - Day ${7 - i}: Score ${log.feelingScore} at ${logDate.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" })}`,
+      );
     }
-
     console.log("Created 7 days of medical logs");
 
     // Create Support Requests
