@@ -1,9 +1,5 @@
-const express = require("express");
-const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const verifyToken = require("../middleware/verifyToken");
-
 const User = require("../models/User");
 const { signupSchema, loginSchema } = require("../validations/authSchemas");
 
@@ -21,7 +17,7 @@ const generateToken = (user) => {
   });
 };
 
-router.post("/signup", async (req, res) => {
+const signup = async (req, res) => {
   try {
     const validatedData = signupSchema.parse(req.body);
 
@@ -65,9 +61,9 @@ router.post("/signup", async (req, res) => {
     console.error("Signup error:", error);
     res.status(500).json({ error: "Server error during signup" });
   }
-});
+};
 
-router.post("/login", async (req, res) => {
+const login = async (req, res) => {
   try {
     const validatedData = loginSchema.parse(req.body);
 
@@ -110,9 +106,9 @@ router.post("/login", async (req, res) => {
     console.error("Login error:", error);
     res.status(500).json({ error: "Server error during login" });
   }
-});
+};
 
-router.get("/me", verifyToken, async (req, res) => {
+const getProfile = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.userId, {
       attributes: { exclude: ["passwordHash"] },
@@ -127,6 +123,10 @@ router.get("/me", verifyToken, async (req, res) => {
     console.error("Get profile error:", error);
     res.status(500).json({ error: "Server error" });
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  signup,
+  login,
+  getProfile,
+};
