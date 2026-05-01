@@ -1,3 +1,6 @@
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../../.env") });
+
 const User = require("./User");
 const Appointment = require("./Appointment");
 const CaregiverAssignment = require("./CaregiverAssignment");
@@ -5,7 +8,7 @@ const SupportRequest = require("./SupportRequest");
 const MedicalLog = require("./MedicalLog");
 const Task = require("./Task");
 
-/*-------User Appointments one to Many-------*/
+/*------- User Appointments -------*/
 
 User.hasMany(Appointment, {
   foreignKey: "userId",
@@ -18,7 +21,7 @@ Appointment.belongsTo(User, {
   as: "patient",
 });
 
-/*-------User medial logs one to Many-------*/
+/*------- User medial logs ------*/
 
 User.hasMany(MedicalLog, {
   foreignKey: "userId",
@@ -28,12 +31,12 @@ User.hasMany(MedicalLog, {
 
 MedicalLog.belongsTo(User, {
   foreignKey: "userId",
-  as: "patient",
+  as: "user",
 });
 
-/*-------Caregiver assignment Many to Many-------*/
+/*------- Caregiver assignment -------*/
 
-/*Patient side*/
+// Patient side
 User.hasMany(CaregiverAssignment, {
   foreignKey: "patientId",
   as: "caregiverAssignments",
@@ -45,7 +48,7 @@ CaregiverAssignment.belongsTo(User, {
   as: "patient",
 });
 
-/*Caregiver side*/
+// Caregiver side
 User.hasMany(CaregiverAssignment, {
   foreignKey: "caregiverId",
   as: "patientAssignments",
@@ -57,9 +60,9 @@ CaregiverAssignment.belongsTo(User, {
   as: "caregiver",
 });
 
-/*------- support request Many to One -------*/
+/*------- support request -------*/
 
-/*Patient side*/
+// Patient side
 User.hasMany(SupportRequest, {
   foreignKey: "patientId",
   as: "createdSupportRequests",
@@ -71,7 +74,7 @@ SupportRequest.belongsTo(User, {
   as: "patient",
 });
 
-/*Caregiver side*/
+// Caregiver side
 User.hasMany(SupportRequest, {
   foreignKey: "caregiverId",
   as: "assignedSupportRequests",
@@ -83,8 +86,7 @@ SupportRequest.belongsTo(User, {
   as: "caregiver",
 });
 
-/*appointment*/
-
+// Appointment side
 Appointment.hasMany(SupportRequest, {
   foreignKey: "appointmentId",
   as: "supportRequests",
@@ -96,9 +98,9 @@ SupportRequest.belongsTo(Appointment, {
   as: "appointment",
 });
 
-/*------- Task Many to One -------*/
+/*------- Task -------*/
 
-/*Appointment*/
+// Appointment side
 Appointment.hasMany(Task, {
   foreignKey: "appointmentId",
   as: "tasks",
@@ -110,7 +112,7 @@ Task.belongsTo(Appointment, {
   as: "appointment",
 });
 
-/*Patient*/
+// Patient side
 User.hasMany(Task, {
   foreignKey: "patientId",
   as: "tasks",
@@ -120,17 +122,6 @@ User.hasMany(Task, {
 Task.belongsTo(User, {
   foreignKey: "patientId",
   as: "patient",
-});
-
-/*------- Medical Logs -------*/
-MedicalLog.belongsTo(User, {
-  foreignKey: "userId",
-  as: "user",
-});
-
-User.hasMany(MedicalLog, {
-  foreignKey: "userId",
-  as: "medicalLogs",
 });
 
 module.exports = {
