@@ -10,5 +10,6 @@ router.post("/", appointmentsController.createAppointment);
 router.get("/:id", appointmentsController.getAppointmentById);
 router.put("/:id", appointmentsController.updateAppointment);
 router.delete("/:id", appointmentsController.deleteAppointment);
+router.patch("/:id/complete", appointmentsController.markComplete);
 
 module.exports = router;

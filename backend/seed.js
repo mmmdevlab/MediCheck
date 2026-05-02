@@ -34,16 +34,16 @@ const seedDatabase = async () => {
       passwordHash: hashedPassword,
       fullName: "Test Patient",
       role: "patient",
-      phone: "+81 555-0100",
-      dateOfBirth: "1990-01-15",
+      phone: "+65 9123 4567",
+      dateOfBirth: "1985-05-12",
     });
 
     const caregiver = await User.create({
       email: "caregiver@test.com",
       passwordHash: hashedPassword,
-      fullName: "Jane Caregiver",
+      fullName: "Test Caregiver",
       role: "caregiver",
-      phone: "+81 555-0200",
+      phone: "+65 9234 5678",
       dateOfBirth: "1985-05-20",
     });
 
@@ -64,78 +64,117 @@ const seedDatabase = async () => {
 
     // Appointments
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const upcomingDate = new Date("2026-05-20T10:00:00+08:00");
+    const appointment1 = await Appointment.create({
+      userId: patient.id,
+      title: "Annual Physical Checkup",
+      doctorName: "Dr. Sarah Tan",
+      clinicName: "Raffles Medical Group",
+      appointmentDate: upcomingDate,
+      location: "Tower B, Level 3, Room 302",
+      status: "scheduled",
+      notes:
+        "Bring recent lab work and list of current medications. Fast for 8 hours before appointment.",
+    });
+
+    const completedDate = new Date("2026-04-15T14:00:00+08:00");
+    const appointment2 = await Appointment.create({
+      userId: patient.id,
+      title: "Dental Cleaning",
+      doctorName: "Dr. Lee Wei Ming",
+      clinicName: "Q&M Dental Surgery",
+      appointmentDate: completedDate,
+      location: "Orchard Road, #05-12",
+      status: "completed",
+      notes:
+        "Routine cleaning completed. No cavities detected. Next visit in 6 months.",
+    });
+
+    const missedDate = new Date("2026-04-20T09:00:00+08:00");
+    const appointment3 = await Appointment.create({
+      userId: patient.id,
+      title: "Cardiology Follow-up",
+      doctorName: "Dr. Robert Chen",
+      clinicName: "National Heart Centre Singapore",
+      appointmentDate: missedDate,
+      location: "Block A, Level 2, Clinic 2A",
+      status: "scheduled",
+      notes:
+        "Follow-up on blood pressure medication. Bring BP readings from last 2 weeks.",
+    });
+
+    const cancelledDate = new Date("2026-05-25T11:00:00+08:00");
+    const appointment4 = await Appointment.create({
+      userId: patient.id,
+      title: "Dermatology Consultation",
+      doctorName: "Dr. Emily Ng",
+      clinicName: "National Skin Centre",
+      appointmentDate: cancelledDate,
+      location: "Mandalay Road, Level 1",
+      status: "cancelled",
+      notes: "Cancelled due to schedule conflict. Will reschedule next month.",
+    });
 
     const nextWeek = new Date(now);
     nextWeek.setDate(nextWeek.getDate() + 7);
-
-    const lastWeek = new Date(now);
-    lastWeek.setDate(lastWeek.getDate() - 7);
-
-    const appointment1 = await Appointment.create({
+    const appointment5 = await Appointment.create({
       userId: patient.id,
-      title: "Annual Checkup",
-      doctorName: "Dr. Sarah Johnson",
-      clinicName: "Tokyo Medical Center",
-      appointmentDate: tomorrow,
-      location: "Building A, 3rd Floor",
-      status: "scheduled",
-      notes: "Bring previous test results",
-    });
-
-    const appointment2 = await Appointment.create({
-      userId: patient.id,
-      title: "Follow-up Consultation",
-      doctorName: "Dr. Michael Chen",
-      clinicName: "Shibuya Clinic",
+      title: "Eye Examination",
+      doctorName: "Dr. Tan Mei Ling",
+      clinicName: "Singapore National Eye Centre",
       appointmentDate: nextWeek,
-      location: "Room 205",
+      location: "Block 11, Level 3, Eye Clinic",
       status: "scheduled",
-      notes: "Discuss medication adjustments",
-    });
-
-    const appointment3 = await Appointment.create({
-      userId: patient.id,
-      title: "Blood Test",
-      doctorName: "Dr. Emily Tanaka",
-      clinicName: "Tokyo Medical Center",
-      appointmentDate: lastWeek,
-      status: "completed",
-      notes: "Results reviewed - all normal",
+      notes: "Bring existing glasses. Pupil dilation test may be done.",
     });
 
     console.log("Created appointments");
     console.log(`   - ${appointment1.title} (${appointment1.appointmentDate})`);
     console.log(`   - ${appointment2.title} (${appointment2.appointmentDate})`);
     console.log(`   - ${appointment3.title} (${appointment3.appointmentDate})`);
+    console.log(`   - ${appointment4.title} (${appointment4.appointmentDate})`);
+    console.log(`   - ${appointment5.title} (${appointment5.appointmentDate})`);
 
     // Tasks
     const task1 = await Task.create({
       appointmentId: appointment1.id,
       patientId: patient.id,
       title: "Fast for 8 hours before appointment",
-      description: "No food or drinks except water after midnight",
+      description:
+        "No food or drinks except water after midnight. Appointment at 10 AM.",
       taskType: "lab_work",
-      dueDate: tomorrow,
+      dueDate: upcomingDate,
       isCompleted: false,
     });
 
     const task2 = await Task.create({
       appointmentId: appointment1.id,
       patientId: patient.id,
-      title: "Bring insurance card and ID",
+      title: "Bring NRIC and Medisave card",
+      description: "Insurance and identification required for registration",
       taskType: "other",
-      dueDate: tomorrow,
+      dueDate: upcomingDate,
       isCompleted: true,
     });
 
     const task3 = await Task.create({
-      appointmentId: appointment2.id,
+      appointmentId: appointment5.id,
       patientId: patient.id,
-      title: "Pick up prescription refill",
+      title: "Pick up prescription refill at Guardian Pharmacy",
+      description: "Blood pressure medication - 30-day supply",
       taskType: "medication",
       dueDate: nextWeek,
+      isCompleted: false,
+    });
+
+    const task4 = await Task.create({
+      appointmentId: appointment3.id,
+      patientId: patient.id,
+      title: "Bring blood pressure readings (2 weeks)",
+      description: "Morning and evening readings recorded at home",
+      taskType: "other",
+      dueDate: missedDate,
       isCompleted: false,
     });
 
@@ -143,6 +182,7 @@ const seedDatabase = async () => {
     console.log(`   - ${task1.title}`);
     console.log(`   - ${task2.title}`);
     console.log(`   - ${task3.title}`);
+    console.log(`   - ${task4.title}`);
 
     // Medical Logs (7 days)
     console.log("Creating 7 days of medical logs...");
@@ -158,13 +198,10 @@ const seedDatabase = async () => {
 
       const log = await MedicalLog.create({
         userId: patient.id,
-        feelingScore: Math.floor(Math.random() * 2) + 3,
+        feelingScore: Math.floor(Math.random() * 3) + 3,
         createdAt: logDate,
       });
       logs.push(log);
-      console.log(
-        `   - Day ${7 - i}: Score ${log.feelingScore} at ${logDate.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" })}`,
-      );
     }
     console.log("Created 7 days of medical logs");
 
@@ -180,17 +217,30 @@ const seedDatabase = async () => {
     });
 
     const supportRequest2 = await SupportRequest.create({
-      appointmentId: appointment2.id,
+      appointmentId: appointment5.id,
       patientId: patient.id,
       caregiverId: caregiver.id,
       requestType: "notes",
       status: "pending",
-      message: "Can you help me remember what the doctor said?",
+      message:
+        "Can you come along to take notes during the eye exam consultation?",
+    });
+
+    const supportRequest3 = await SupportRequest.create({
+      appointmentId: appointment3.id,
+      patientId: patient.id,
+      caregiverId: caregiver.id,
+      requestType: "transport",
+      status: "declined",
+      message:
+        "Need transport to National Heart Centre (this was the missed appointment)",
+      respondedAt: new Date(missedDate),
     });
 
     console.log("Created support requests");
-    console.log(`   - Transport request (accepted)`);
-    console.log(`   - Notes request (pending)`);
+    console.log(`   - Transport request (accepted) - ${appointment1.title}`);
+    console.log(`   - Notes request (pending) - ${appointment5.title}`);
+    console.log(`   - Transport request (declined) - ${appointment3.title}`);
 
     console.log("Database seeding completed successfully!");
     process.exit(0);

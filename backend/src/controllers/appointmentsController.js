@@ -10,7 +10,8 @@ const getAllAppointments = async (req, res) => {
       where: { userId: req.user.userId },
       order: [["appointmentDate", "ASC"]],
     });
-    res.status(200).json(appointments);
+
+    res.status(200).json({ appointments });
   } catch (error) {
     console.error("Error fetching appointments:", error);
     res.status(500).json({ error: "Failed to fetch appointments" });
@@ -126,10 +127,35 @@ const deleteAppointment = async (req, res) => {
   }
 };
 
+const markComplete = async (req, res) => {
+  try {
+    const appointment = await Appointment.findOne({
+      where: {
+        id: req.params.id,
+        userId: req.user.id,
+      },
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    await appointment.update({ status: "completed" });
+
+    return res.json({ appointment });
+  } catch (error) {
+    console.error("Mark complete error:", error);
+    return res
+      .status(500)
+      .json({ error: "Failed to mark appointment as complete" });
+  }
+};
+
 module.exports = {
   getAllAppointments,
   getAppointmentById,
   createAppointment,
   updateAppointment,
   deleteAppointment,
+  markComplete,
 };
