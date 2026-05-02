@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 const FeelingHistoryCard = ({ lastLog }) => {
@@ -41,7 +40,7 @@ const FeelingHistoryCard = ({ lastLog }) => {
 
       <div className="flex items-center gap-2 text-sm">
         <span className="text-gray-600">
-          {formatTimestamp(lastLog?.created_at)}
+          {formatTimestamp(lastLog?.createdAt)}
         </span>
         {lastLog?.label && (
           <span className="font-bold text-gray-900">"{lastLog.label}"</span>
@@ -53,9 +52,9 @@ const FeelingHistoryCard = ({ lastLog }) => {
 
 FeelingHistoryCard.propTypes = {
   lastLog: PropTypes.shape({
-    feeling_score: PropTypes.number,
+    feelingScore: PropTypes.number,
     label: PropTypes.string,
-    created_at: PropTypes.string,
+    createdAt: PropTypes.string,
   }),
 };
 

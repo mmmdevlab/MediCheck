@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { Laugh, SmilePlus, Smile, Meh, Frown } from 'lucide-react';
 
@@ -52,9 +51,8 @@ const FeelingLogger = ({ onFeelingLog, lastLoggedFeeling = null }) => {
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-4">
-        <p className="text-xs font-extrabold text-gray-400 uppercase tracking-wide mb-1">
+        <p className="text-xs font-extrabold text-gray-400 uppercase tracking-widest mb-1">
           YOUR STATUS
         </p>
         <h2 className="text-2xl font-bold text-gray-800">
@@ -70,6 +68,7 @@ const FeelingLogger = ({ onFeelingLog, lastLoggedFeeling = null }) => {
           return (
             <button
               key={feeling.id}
+              type="button"
               onClick={() => handleFeelingClick(feeling)}
               className={`
                 flex flex-col items-center justify-center
