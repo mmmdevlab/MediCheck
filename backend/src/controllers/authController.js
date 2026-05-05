@@ -17,7 +17,7 @@ const generateToken = (user) => {
   });
 };
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
   try {
     const validatedData = signupSchema.parse(req.body);
 
@@ -58,12 +58,11 @@ const signup = async (req, res) => {
       });
     }
 
-    console.error("Signup error:", error);
-    res.status(500).json({ error: "Server error during signup" });
+    next(error);
   }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const validatedData = loginSchema.parse(req.body);
 
@@ -103,12 +102,11 @@ const login = async (req, res) => {
       });
     }
 
-    console.error("Login error:", error);
-    res.status(500).json({ error: "Server error during login" });
+    next(error);
   }
 };
 
-const getProfile = async (req, res) => {
+const getProfile = async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user.userId, {
       attributes: { exclude: ["passwordHash"] },
@@ -120,8 +118,7 @@ const getProfile = async (req, res) => {
 
     res.json({ user });
   } catch (error) {
-    console.error("Get profile error:", error);
-    res.status(500).json({ error: "Server error" });
+    next(error);
   }
 };
 
