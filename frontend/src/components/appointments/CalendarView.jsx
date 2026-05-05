@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import PropTypes from 'prop-types';
 import { formatDate } from '../../utils/dateFormats';
 
 const formatDateKey = (date) => {
@@ -210,19 +209,6 @@ const CalendarView = ({
       </div>
     </div>
   );
-};
-
-CalendarView.propTypes = {
-  appointments: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      appointmentDate: PropTypes.string.isRequired,
-      doctorName: PropTypes.string,
-      clinicName: PropTypes.string,
-    })
-  ),
-  onDateClick: PropTypes.func,
-  onAppointmentClick: PropTypes.func,
 };
 
 export default CalendarView;

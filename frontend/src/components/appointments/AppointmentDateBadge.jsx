@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { formatDate } from '../../utils/dateFormats';
 
 const AppointmentDateBadge = ({ date, status }) => {
@@ -60,15 +59,6 @@ const AppointmentDateBadge = ({ date, status }) => {
       )}
     </div>
   );
-};
-
-AppointmentDateBadge.propTypes = {
-  date: PropTypes.string.isRequired,
-  status: PropTypes.oneOf(['scheduled', 'completed', 'cancelled']),
-};
-
-AppointmentDateBadge.defaultProps = {
-  status: 'scheduled',
 };
 
 export default AppointmentDateBadge;

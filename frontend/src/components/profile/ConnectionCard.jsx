@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { UserMinus, ShieldAlert } from 'lucide-react';
 import { FEELING_SCORES } from '../../utils/constants';
 import ActiveButton from '../UI/ActionButton';
@@ -101,19 +100,6 @@ const ConnectionCard = ({ connection, onRemove, userRole }) => {
       </div>
     </div>
   );
-};
-
-ConnectionCard.propTypes = {
-  connection: PropTypes.shape({
-    id: PropTypes.number,
-    fullName: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    relationshipType: PropTypes.oneOf(['family', 'friend', 'professional'])
-      .isRequired,
-    latestFeelingScore: PropTypes.number,
-  }).isRequired,
-  onRemove: PropTypes.func,
-  userRole: PropTypes.oneOf(['patient', 'caregiver']).isRequired,
 };
 
 export default ConnectionCard;

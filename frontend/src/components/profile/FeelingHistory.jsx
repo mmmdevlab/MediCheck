@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { FEELING_SCORES } from '../../utils/constants';
 import { formatWeekday, formatDate } from '../../utils/dateFormats';
 

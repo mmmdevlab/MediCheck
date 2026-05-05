@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { useMedicalLogs } from '../../hooks/useMedicalLogs';
 import { FEELING_SCORES } from '../../utils/constants';
 import { formatDate } from '../../utils/dateFormats';
@@ -76,14 +75,6 @@ const FeelingHistoryCard = ({ lastLog }) => {
       </div>
     </div>
   );
-};
-
-FeelingHistoryCard.propTypes = {
-  lastLog: PropTypes.shape({
-    feelingScore: PropTypes.number,
-    label: PropTypes.string,
-    createdAt: PropTypes.string,
-  }),
 };
 
 export default FeelingHistoryCard;

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { FILTER_OPTIONS } from '../../utils/constants';
 
 const AppointmentFilterBar = ({ activeFilter, onFilterChange }) => {
@@ -26,11 +25,6 @@ const AppointmentFilterBar = ({ activeFilter, onFilterChange }) => {
       ))}
     </div>
   );
-};
-
-AppointmentFilterBar.propTypes = {
-  activeFilter: PropTypes.string.isRequired,
-  onFilterChange: PropTypes.func.isRequired,
 };
 
 export default AppointmentFilterBar;

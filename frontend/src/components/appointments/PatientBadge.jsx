@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { BADGE_COLORS } from '../../utils/constants';
 
 const PatientBadge = ({ name }) => {
@@ -20,10 +19,6 @@ const PatientBadge = ({ name }) => {
       {name}
     </span>
   );
-};
-
-PatientBadge.propTypes = {
-  name: PropTypes.string.isRequired,
 };
 
 export default PatientBadge;

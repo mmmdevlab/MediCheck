@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import ActionButton from '../UI/ActionButton';
 import {
   REQUEST_TYPE_CONFIG,
@@ -205,42 +204,6 @@ const SupportRequestCard = ({
       )}
     </div>
   );
-};
-
-RequestItem.propTypes = {
-  request: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    requestType: PropTypes.string.isRequired,
-    patient: PropTypes.object,
-    appointment: PropTypes.object,
-    message: PropTypes.string,
-    status: PropTypes.string,
-  }).isRequired,
-  mode: PropTypes.oneOf(['pending', 'accepted', 'history']).isRequired,
-  onAccept: PropTypes.func,
-  onDecline: PropTypes.func,
-  onComplete: PropTypes.func,
-  onUndo: PropTypes.func,
-  loadingId: PropTypes.number,
-  error: PropTypes.number,
-};
-
-SupportRequestCard.propTypes = {
-  requests: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      requestType: PropTypes.string.isRequired,
-      patient: PropTypes.object,
-      appointment: PropTypes.object,
-      message: PropTypes.string,
-      status: PropTypes.string,
-    })
-  ),
-  mode: PropTypes.oneOf(['pending', 'accepted', 'history']),
-  onAccept: PropTypes.func,
-  onDecline: PropTypes.func,
-  onComplete: PropTypes.func,
-  onUndo: PropTypes.func,
 };
 
 export default SupportRequestCard;

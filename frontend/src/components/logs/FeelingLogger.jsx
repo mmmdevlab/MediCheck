@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { FEELING_SCORES } from '../../utils/constants';
 
 const FeelingLogger = ({ onFeelingLog, lastLoggedFeeling = null }) => {
@@ -40,11 +39,6 @@ const FeelingLogger = ({ onFeelingLog, lastLoggedFeeling = null }) => {
       </div>
     </div>
   );
-};
-
-FeelingLogger.propTypes = {
-  onFeelingLog: PropTypes.func.isRequired,
-  lastLoggedFeeling: PropTypes.number,
 };
 
 export default FeelingLogger;

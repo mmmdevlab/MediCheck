@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   Clock,
   MapPin,
@@ -419,28 +418,6 @@ const AppointmentCard = ({
       </div>
     </div>
   );
-};
-
-AppointmentCard.propTypes = {
-  appointment: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    doctorName: PropTypes.string,
-    clinicName: PropTypes.string,
-    appointmentDate: PropTypes.string.isRequired,
-    location: PropTypes.string,
-    status: PropTypes.string,
-    notes: PropTypes.string,
-    supportRequest: PropTypes.object,
-  }).isRequired,
-  variant: PropTypes.oneOf(['dashboard', 'extended']),
-  onReschedule: PropTypes.func.isRequired,
-  onMarkDone: PropTypes.func.isRequired,
-  onRequestHelp: PropTypes.func.isRequired,
-  onEdit: PropTypes.func,
-  onDelete: PropTypes.func,
-  onUndoComplete: PropTypes.func,
-  onCancelAppointment: PropTypes.func,
 };
 
 export default AppointmentCard;

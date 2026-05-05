@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { X, Mail } from 'lucide-react';
 
 const AddCaregiverForm = ({ onSubmit, onCancel, userName }) => {
@@ -309,12 +308,6 @@ const AddCaregiverForm = ({ onSubmit, onCancel, userName }) => {
       </div>
     </div>
   );
-};
-
-AddCaregiverForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  userName: PropTypes.string,
 };
 
 export default AddCaregiverForm;

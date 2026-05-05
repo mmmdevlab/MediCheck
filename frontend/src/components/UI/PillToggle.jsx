@@ -1,5 +1,4 @@
 import { useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 
 const PillToggle = ({
   options,
@@ -73,20 +72,6 @@ const PillToggle = ({
       </div>
     </div>
   );
-};
-
-PillToggle.propTypes = {
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      value: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      icon: PropTypes.node,
-    })
-  ).isRequired,
-  active: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  className: PropTypes.string,
-  variant: PropTypes.oneOf(['default', 'compact']),
 };
 
 export default PillToggle;

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { REQUEST_TYPE_CONFIG } from '../../utils/constants';
 import { formatDate } from '../../utils/dateFormats';
 
@@ -70,21 +69,6 @@ const SupportRequestBox = ({ supportRequest }) => {
       </div>
     </div>
   );
-};
-
-SupportRequestBox.propTypes = {
-  supportRequest: PropTypes.shape({
-    status: PropTypes.string,
-    requestType: PropTypes.string,
-    message: PropTypes.string,
-    createdAt: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.instanceOf(Date),
-    ]),
-    caregiver: PropTypes.shape({
-      fullName: PropTypes.string,
-    }),
-  }),
 };
 
 export default SupportRequestBox;

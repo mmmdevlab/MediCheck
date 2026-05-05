@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Clock } from 'lucide-react';
 import AppointmentDateBadge from './AppointmentDateBadge';
 import PatientBadge from './PatientBadge';
@@ -21,14 +20,6 @@ const AppointmentCardCaregiver = ({ appointment }) => {
       </div>
     </div>
   );
-};
-
-AppointmentCardCaregiver.propTypes = {
-  appointment: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    appointmentDate: PropTypes.string.isRequired,
-    patientName: PropTypes.string,
-  }).isRequired,
 };
 
 export default AppointmentCardCaregiver;

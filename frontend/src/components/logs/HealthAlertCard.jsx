@@ -1,5 +1,4 @@
 import { useMedicalLogs } from '../../hooks/useMedicalLogs';
-import PropTypes from 'prop-types';
 import { AlertCircle, Phone } from 'lucide-react';
 import { FEELING_SCORES } from '../../utils/constants';
 import { formatDate } from '../../utils/dateFormats';
@@ -149,21 +148,6 @@ const AlertItem = ({ alert, onCheckIn }) => {
       </div>
     </div>
   );
-};
-
-HealthAlertCard.propTypes = {
-  alerts: PropTypes.array,
-  onCheckIn: PropTypes.func.isRequired,
-};
-
-AlertList.propTypes = {
-  alerts: PropTypes.array.isRequired,
-  onCheckIn: PropTypes.func.isRequired,
-};
-
-AlertItem.propTypes = {
-  alert: PropTypes.object.isRequired,
-  onCheckIn: PropTypes.func.isRequired,
 };
 
 export { AlertList };

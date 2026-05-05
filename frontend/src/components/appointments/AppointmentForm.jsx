@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { X } from 'lucide-react';
 import { formatTime } from '../../utils/timeFormat';
 
@@ -343,12 +342,6 @@ const AppointmentForm = ({ appointment = null, onSubmit, onCancel }) => {
       </div>
     </div>
   );
-};
-
-AppointmentForm.propTypes = {
-  appointment: PropTypes.object,
-  onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
 };
 
 export default AppointmentForm;
