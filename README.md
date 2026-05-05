@@ -13,32 +13,35 @@
 - React 18 + Vite
 - Tailwind CSS
 - React Router DOM
-- Lucide React (Icons)
-- Axios (HTTP client)
+- Lucide React
+- Axios
 - React Hook Form
-- Zod (Schema validation)
-- TanStack Query (Server state management)
+- Zod
+- TanStack Query
+- Headless UI
+- date-fns
 
 **Backend:**
 
-- Bun (JavaScript runtime)
+- Bun
 - Express.js
-- PostgreSQL + Sequelize (ORM)
-- JWT + Bcrypt (Authentication)
-- Zod (Request validation)
-- Cors, Dotenv
+- PostgreSQL
+- Sequelize ORM
+- JWT
+- Zod
+- CORS, Dotenv
 
 **Development Tools:**
 
-- Beekeeper Studio (Database GUI)
-- Bruno (API testing)
+- Beekeeper Studio
+- Bruno
 - Git & GitHub
 
 **Deployment:**
 
-- Netlify (frontend)
-- Railway (backend)
-- Neon (PostgreSQL database)
+- Netlify
+- Railway
+- Neon
 
 ---
 
@@ -98,21 +101,21 @@ Healthcare doesn't end when the prescription is written but for many patients, e
 
 **What's Missing:**
 
-1. **Real-world constraint modeling:**
-   - Appointments create follow-up tasks
-   - Tasks need completion tracking
-   - Without modeling this system, users cannot prioritize actions
-
-2. **Accountability layer:**
+1. **Accountability:**
    - People managing health alone have no safety net
    - When they fall off track, no one notices
    - Support networks want to help but don't know when to step in
+
+2. **Real-world constraint modeling:**
+   - Appointments create follow-up tasks
+   - Tasks need completion tracking
+   - Without modeling this system, users cannot prioritize actions
 
 3. **Privacy-first visibility:**
    - Existing caregiver apps are invasive (they see everything: diagnoses, medications, conditions)
    - What's needed: **minimal viable support** — just enough info for accountability, not medical snooping
 
-4. **Clear action roadmap:**
+4. **Clear action roadmap (stretch goals):**
    - Patients need a structured "what to do next" system allowing them to come back for a followup
    - Task lists linked to appointments eliminate confusion
 
@@ -144,29 +147,26 @@ Healthcare doesn't end when the prescription is written but for many patients, e
 - **Full CRUD:** Create, view, edit, and delete appointments
 - **Authorization:** Only the patient who created an appointment can modify it
 
-**3. Task Management**
-
-- **Appointment-Linked Tasks:** Create tasks tied to specific appointments
-- **Checkbox Toggle:** Simple one-tap completion tracking
-- **Progress Visibility:** Caregivers can see task completion status
-
-**4. Daily Health Logger**
+**3. Daily Health Logger**
 
 - **One-Tap Emoji System:** Rate how you're feeling (scale:1-5)
-- **7-Day History:** Visual timeline of recent health check-ins
-- **Privacy-First:** Caregivers see status without medical details
+- **Health Alert** Send to the Caregiver if the Patient is feeling unwell or bad
+- **Privacy-First:** Caregivers see status without medical details encouraging them to check-in
+- **7-Day History:** Visual timeline of recent health check-ins for patients
 
-**5. Support Request Flow**
+**4. Support Request Flow**
 
-- **Help Requests:** Patients can request assistance from assigned caregivers
+- **Support Requests:** Patients can request assistance from assigned caregivers for upcoming appointments
 - **Status Tracking:** Pending, In Progress, Completed states
 - **Two-Way Communication:** Caregivers can respond and mark requests complete
 
-**6. Caregiver Access Control**
+**5. Caregiver Access Control**
 
 - **Grant/Revoke Access:** Patients control who can view their data
 - **Read-Only Permissions:** Caregivers view appointments and tasks but cannot modify them
 - **Privacy Preservation:** Medical details remain hidden from caregivers
+- **Help Summary:** Caregivers can see their commitment of helping stats
+- **Remove Access:** Not only patients but caregivers can remove patients if need be
 
 ---
 
@@ -180,8 +180,7 @@ MediCheck PATIENT
 ├── Page 0 → Auth (Login / Signup)
 ├── Page 1 → Dashboard
 ├── Page 2 → Appointments
-├── Page 3 → Tasks
-└── Page 4 → Profile
+└── Page 3 → Profile
 
 MediCheck CAREGIVER
 │
@@ -233,12 +232,13 @@ MediCheck CAREGIVER
 ## Next Steps
 
 - **Analytics Dashboard** for caregivers (trend visualization)
+- **Access limitation** setup for both Caregiver side and Clinic side
 - **Clinic Role** for managing multiple patients
-- **Medication Refill Workflow** with supply tracking
-- **Calendar View UI** for appointment visualization
+- **Appointment Scheduling** for both clinic and patient
+- **Task Management** for each Appointment act as a todo list
+- **Medication Management** with supply tracking
 - **Push Notifications** for upcoming appointments
 - **Email Reminders** for overdue tasks
-- **Mobile App** (React Native)
 - **Multi-Language Support** (i18n)
 
 ---
@@ -249,18 +249,38 @@ This project introduced several new technologies compared to my previous work:
 
 **Backend:**
 
-- [PostgreSQL](https://www.postgresql.org/docs/) — Relational database
-- [Sequelize ORM](https://sequelize.org/) — SQL object-relational mapping
+- [PostgreSQL](https://www.postgresql.org/docs/) — Relational database for structured data persistence
+- [Sequelize ORM](https://sequelize.org/) — SQL object-relational mapping for database queries
+- [Bun](https://bun.sh/) — Fast JavaScript runtime as Node.js alternative
+- [Express.js](https://expressjs.com/) — Web framework for building REST APIs
+- [Zod](https://zod.dev) — Request validation and schema definition
 
 **Frontend:**
 
-- [TanStack Query](https://tanstack.com/query/latest) — Server state management & caching
-- [React Hook Form](https://react-hook-form.com) — Form handling with validation
-- [Zod](https://zod.dev) — Schema validation (shared frontend/backend)
+- [Vite](https://vitejs.dev/) — Next-generation build tool with lightning-fast HMR
+- [React 18](https://react.dev/) — UI library with hooks and concurrent features
+
+**Libraries & Development:**
+
+- [TanStack Query](https://tanstack.com/query/latest) — Server state management with caching and synchronization
+- [React Hook Form](https://react-hook-form.com) — Form handling with minimal re-renders
+- [Zod](https://zod.dev) — Runtime schema validation (shared frontend/backend)
+- [Axios](https://axios-http.com/) — Promise-based HTTP client with interceptors
+- [React Router DOM](https://reactrouter.com/) — Client-side routing for single-page applications
+- [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS framework for rapid UI development
+- [Lucide React](https://lucide.dev/) — Consistent, customizable icon library
+- [Headless UI](https://headlessui.com/) — Unstyled, accessible React components
+- [date-fns](https://date-fns.org/) — Modular date utility library for JavaScript
+
+**Authentication & Security:**
+
+- JWT (JSON Web Tokens) — Stateless authentication mechanism
+- Bcrypt — Password hashing for secure credential storage
 
 **Deployment:**
 
-- [Neon](https://neon.tech) — Managed PostgreSQL hosting
-- [Railway](https://railway.app) — Backend deployment
+- [Neon](https://neon.tech) — Managed PostgreSQL hosting with serverless capabilities
+- [Railway](https://railway.app) — Backend deployment with Git integration
+- [Netlify](https://netlify.com/) — Frontend deployment with automatic builds from GitHub
 
 ## References
