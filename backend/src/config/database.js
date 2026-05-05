@@ -1,15 +1,37 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error(
+    "DATABASE_URL is not set. Please configure it in your environment.",
+  );
+}
+
+const isProduction = process.env.NODE_ENV === "production";
+const useSsl =
+  process.env.DB_SSL !== undefined
+    ? process.env.DB_SSL === "true"
+    : isProduction;
+const rejectUnauthorized =
+  process.env.DB_SSL_REJECT_UNAUTHORIZED !== undefined
+    ? process.env.DB_SSL_REJECT_UNAUTHORIZED === "true"
+    : false;
+
+const sequelize = new Sequelize(databaseUrl, {
   dialect: "postgres",
-  logging: process.env.NODE_ENV === "production" ? false : console.log,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: process.env.NODE_ENV === "production",
-    },
-  },
+  logging: isProduction ? false : console.log,
+  ...(useSsl
+    ? {
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized,
+          },
+        },
+      }
+    : {}),
 });
 
 const testConnection = async () => {
@@ -27,7 +49,6 @@ const initializeDatabase = async () => {
   try {
     console.log("\nStarting database initialization...\n");
 
-    // Step 1: Test connection
     await testConnection();
 
     console.log("Verifying/creating ENUM types...");

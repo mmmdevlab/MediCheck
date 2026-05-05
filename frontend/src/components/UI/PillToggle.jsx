@@ -1,8 +1,14 @@
 import { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-const PillToggle = ({ options, active, onSelect, className = '' }) => {
+const PillToggle = ({
+  options,
+  active,
+  onSelect,
+  className = '',
+  variant = 'default',
+}) => {
   const containerRef = useRef(null);
-
   const activeIndex = options.findIndex((opt) => opt.value === active);
 
   useEffect(() => {
@@ -26,15 +32,29 @@ const PillToggle = ({ options, active, onSelect, className = '' }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeIndex, options, onSelect]);
 
+  const isCompact = variant === 'compact';
+
+  const containerStyles = isCompact
+    ? 'bg-white rounded-full shadow-sm border border-gray-100 p-1'
+    : 'bg-white rounded-full shadow-sm border border-gray-100 px-1 py-1';
+
+  const activeButtonStyles = isCompact
+    ? 'flex items-center gap-2 px-8 py-4 rounded-full bg-black text-white shadow-sm transition-all text-xs font-bold uppercase tracking-wider'
+    : 'flex-1 px-10 py-4 rounded-full bg-primary text-white transition-all text-sm uppercase font-bold tracking-wider';
+
+  const inactiveButtonStyles = isCompact
+    ? 'flex items-center gap-2 px-8 py-4 rounded-full bg-white text-gray-700 hover:text-black hover:bg-gray-50 transition-all text-xs font-bold uppercase tracking-wider'
+    : 'flex-1 px-10 py-4 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all text-sm uppercase font-bold tracking-wider';
+
   return (
     <div
       ref={containerRef}
-      className={`bg-white rounded-full shadow-sm border border-gray-100 px-1 py-1 bg-white/80 backdrop-blur-md ${className}`}
+      className={`${containerStyles} ${className}`}
       role="tablist"
       aria-label="Toggle options"
     >
       <div className="flex items-center gap-1">
-        {options.map(({ value, label }, index) => (
+        {options.map(({ value, label, icon }) => (
           <button
             key={value}
             onClick={() => onSelect(value)}
@@ -43,17 +63,30 @@ const PillToggle = ({ options, active, onSelect, className = '' }) => {
             aria-label={label}
             tabIndex={active === value ? 0 : -1}
             className={
-              active === value
-                ? 'flex-1 px-10 py-3 rounded-full bg-primary text-white transition-all text-sm uppercase font-bold tracking-wider'
-                : 'flex-1 px-10 py-3 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all text-sm uppercase font-bold tracking-wider'
+              active === value ? activeButtonStyles : inactiveButtonStyles
             }
           >
+            {icon && <span>{icon}</span>}
             {label}
           </button>
         ))}
       </div>
     </div>
   );
+};
+
+PillToggle.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      icon: PropTypes.node,
+    })
+  ).isRequired,
+  active: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  variant: PropTypes.oneOf(['default', 'compact']),
 };
 
 export default PillToggle;

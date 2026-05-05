@@ -1,43 +1,32 @@
-import axios from 'axios';
+import apiClient from './client';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+export const logFeeling = async (data) => {
+  const feelingScore = Number(data?.feelingScore);
 
-const getAuthHeader = () => {
-  const token = localStorage.getItem('token');
-  return { Authorization: `Bearer ${token}` };
-};
+  if (!Number.isInteger(feelingScore) || feelingScore < 1 || feelingScore > 5) {
+    throw new Error(`Invalid feelingScore sent to API: ${data?.feelingScore}`);
+  }
 
-const logFeeling = async (feelingScore) => {
-  const response = await axios.post(
-    `${API_URL}/logs`,
-    { feelingScore },
-    { headers: getAuthHeader() }
-  );
+  const response = await apiClient.post('/logs', {
+    feelingScore,
+  });
+
   return response.data;
 };
 
-const getMyLogs = async (days = 7) => {
-  const response = await axios.get(`${API_URL}/logs`, {
+export const getMyLogs = async (days = 7) => {
+  const response = await apiClient.get('/logs', { params: { days } });
+  return response.data;
+};
+
+export const getPatientLatestLog = async (patientId) => {
+  const response = await apiClient.get(`/logs/patients/${patientId}/latest`);
+  return response.data;
+};
+
+export const getPatientLogs = async (patientId, days = 7) => {
+  const response = await apiClient.get(`/logs/patients/${patientId}`, {
     params: { days },
-    headers: getAuthHeader(),
   });
   return response.data;
 };
-
-const getPatientLatestLog = async (patientId) => {
-  const response = await axios.get(
-    `${API_URL}/logs/patients/${patientId}/latest`,
-    { headers: getAuthHeader() }
-  );
-  return response.data;
-};
-
-const getPatientLogs = async (patientId, days = 7) => {
-  const response = await axios.get(`${API_URL}/logs/patients/${patientId}`, {
-    params: { days },
-    headers: getAuthHeader(),
-  });
-  return response.data;
-};
-
-export default { logFeeling, getMyLogs, getPatientLatestLog, getPatientLogs };

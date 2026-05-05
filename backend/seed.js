@@ -51,7 +51,6 @@ const seedDatabase = async () => {
     console.log(`   - Patient: ${patient.email} (ID: ${patient.id})`);
     console.log(`   - Caregiver: ${caregiver.email} (ID: ${caregiver.id})`);
 
-    // Grant caregiver access to patient
     const assignment = await CaregiverAssignment.create({
       patientId: patient.id,
       caregiverId: caregiver.id,
@@ -136,7 +135,6 @@ const seedDatabase = async () => {
     console.log(`   - ${appointment4.title} (${appointment4.appointmentDate})`);
     console.log(`   - ${appointment5.title} (${appointment5.appointmentDate})`);
 
-    // Tasks
     const task1 = await Task.create({
       appointmentId: appointment1.id,
       patientId: patient.id,
@@ -184,7 +182,6 @@ const seedDatabase = async () => {
     console.log(`   - ${task3.title}`);
     console.log(`   - ${task4.title}`);
 
-    // Medical Logs (7 days)
     console.log("Creating 7 days of medical logs...");
 
     const logs = [];
@@ -205,7 +202,6 @@ const seedDatabase = async () => {
     }
     console.log("Created 7 days of medical logs");
 
-    // Create Support Requests
     const supportRequest1 = await SupportRequest.create({
       appointmentId: appointment1.id,
       patientId: patient.id,

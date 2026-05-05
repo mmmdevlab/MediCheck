@@ -24,10 +24,14 @@ const ActionButton = ({
     outline: 'border border-gray-200 text-gray-600 hover:bg-gray-50',
   };
 
-  const padding =
-    typeof children === 'string' || React.Children.count(children) > 1
-      ? 'px-6 py-4'
-      : 'w-10 h-10';
+  const isIconButton =
+    React.Children.count(children) === 1 &&
+    React.isValidElement(children) &&
+    typeof children.type !== 'string';
+
+  const responsiveSizing = isIconButton
+    ? 'w-10 h-10 md:w-12 md:h-12'
+    : 'px-4 py-3 text-[10px] md:px-8 md:py-4 md:text-xs';
 
   return (
     <button
@@ -38,7 +42,7 @@ const ActionButton = ({
         e.stopPropagation();
         onClick?.(e);
       }}
-      className={`${baseStyles} ${variants[variant]} ${padding} ${disabledStyles} ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${responsiveSizing} ${disabledStyles} ${className}`}
       {...props}
     >
       {children}

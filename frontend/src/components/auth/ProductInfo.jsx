@@ -6,7 +6,7 @@ const ProductInfo = () => {
 
   return (
     <div className="w-1/2 bg-white p-12 flex flex-col justify-center">
-      <div className="mb-8">
+      <div className="mb-4">
         <p className="font-body text-xs font-bold tracking-wider text-gray-400 mb-2">
           WELCOME TO MEDICHECK
         </p>
@@ -26,61 +26,40 @@ const ProductInfo = () => {
       <img
         src={isSignup ? '/signup-hero.jpg' : '/login-hero.jpg'}
         alt={isSignup ? 'Elderly hands together' : 'Caregiver support'}
-        className="w-full h-[200px] object-cover rounded-xl mb-8"
+        className="w-full h-[200px] object-cover rounded-3xl mb-8"
       />
 
-      <div className="space-y-6">
-        <div>
-          <p className="font-body text-xs font-bold tracking-wider text-gray-400 mb-1">
-            STAY ORGANIZED
-          </p>
-          <h3 className="text-md font-bold text-primary mb-2">
-            Track Appointments
-          </h3>
-          <p className="font-body text-sm text-gray-600">
-            Centralize your medical calendar. Keep every specialist, check-up,
-            and follow-up in one clear, manageable view.
-          </p>
-        </div>
-
-        <div>
-          <p className="font-body text-xs font-bold tracking-wider text-gray-400 mb-1">
-            BUILD YOUR CIRCLE
-          </p>
-          <h3 className="text-md font-bold text-primary mb-2">
-            Connect Caregivers
-          </h3>
-          <p className="font-body text-sm text-gray-600">
-            Invite family and friends to join your support network, ensuring
-            everyone is on the same page.
-          </p>
-        </div>
-
-        <div>
-          <p className="font-body text-xs font-bold tracking-wider text-gray-400 mb-1">
-            ASK SIMPLY
-          </p>
-          <h3 className="text-md font-bold text-primary mb-2">
-            Request Assistance
-          </h3>
-          <p className="font-body text-sm text-gray-600">
-            Need a ride to the clinic or help with a prescription? Send a
-            request to your circle in seconds.
-          </p>
-        </div>
-
-        <div>
-          <p className="font-body text-xs font-bold tracking-wider text-gray-400 mb-1">
-            COORDINATE SEAMLESSLY
-          </p>
-          <h3 className="text-md font-bold text-primary mb-2">
-            Lean on Support
-          </h3>
-          <p className="font-body text-sm text-gray-600">
-            Caregivers can view active needs, accept tasks, and mark them as
-            complete—so you can focus on recovery.
-          </p>
-        </div>
+      <div className="space-y-6 max-w-3xl">
+        {[
+          {
+            title: 'Track Appointments',
+            desc: 'Centralize your medical calendar. Keep every specialist, check-up, and follow-up in one clear, manageable view.',
+          },
+          {
+            title: 'Connect Caregivers',
+            desc: 'Invite family and friends to join your support network, ensuring everyone is on the same page.',
+          },
+          {
+            title: 'Request Assistance',
+            desc: 'Need a ride to the clinic or help with a prescription? Send a request to your circle in seconds.',
+          },
+          {
+            title: 'Lean on Support',
+            desc: 'Caregivers can view active needs, accept tasks, and mark them as complete—so you can focus on recovery.',
+          },
+        ].map((item, i) => (
+          <div
+            key={i}
+            className="flex flex-col md:flex-row items-start gap-2 md:gap-5 border-l-2 border-primary/20 pl-4 md:border-none md:pl-0"
+          >
+            <h3 className="text-md font-bold text-primary min-w-[180px] shrink-0 pt-0.5">
+              {item.title}
+            </h3>
+            <p className="font-body text-sm text-gray-600 leading-relaxed">
+              {item.desc}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

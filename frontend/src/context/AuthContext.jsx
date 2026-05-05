@@ -1,7 +1,6 @@
-import { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import { createContext, useContext } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import apiClient from '../api/client';
 
 export const AuthContext = createContext();
 
@@ -14,56 +13,81 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+  const {
+    data: user,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['authUser'],
+    queryFn: async () => {
+      const token = localStorage.getItem('accessToken');
+      if (!token) return null;
 
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+      const res = await apiClient.get('/auth/me');
+      return res.data.user;
+    },
+    retry: false,
+    staleTime: 10 * 60 * 1000,
+  });
 
-      try {
-        const res = await axios.get(`${API_URL}/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(res.data.user);
-      } catch (error) {
-        localStorage.removeItem('token');
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const signupMutation = useMutation({
+    mutationFn: async (userData) => {
+      const res = await apiClient.post('/auth/signup', userData);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      queryClient.setQueryData(['authUser'], data.user);
+    },
+  });
 
-    checkAuth();
-  }, []);
+  const loginMutation = useMutation({
+    mutationFn: async (credentials) => {
+      const res = await apiClient.post('/auth/login', credentials);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      queryClient.setQueryData(['authUser'], data.user);
+    },
+  });
 
-  const signup = async (userData) => {
-    const res = await axios.post(`${API_URL}/auth/signup`, userData);
-    localStorage.setItem('token', res.data.token);
-    setUser(res.data.user);
-    return res.data;
-  };
+  const refreshAccessToken = async () => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) throw new Error('No refresh token');
 
-  const login = async (credentials) => {
-    const res = await axios.post(`${API_URL}/auth/login`, credentials);
-    localStorage.setItem('token', res.data.token);
-    setUser(res.data.user);
-    return res.data;
+    try {
+      const res = await apiClient.post('/auth/refresh', { refreshToken });
+      localStorage.setItem('accessToken', res.data.accessToken);
+      return res.data.accessToken;
+    } catch (error) {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      queryClient.setQueryData(['authUser'], null);
+      throw error;
+    }
   };
 
   const signout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    queryClient.setQueryData(['authUser'], null);
+    queryClient.clear();
   };
 
-  return (
-    <AuthContext.Provider value={{ user, loading, signup, login, signout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user: user ?? null,
+    loading,
+    signup: signupMutation.mutateAsync,
+    login: loginMutation.mutateAsync,
+    signout,
+    refreshAccessToken,
+    authError: error,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

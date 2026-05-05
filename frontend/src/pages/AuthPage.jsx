@@ -32,7 +32,7 @@ const AuthPage = () => {
           <div className="bg-white p-8 rounded-3xl shadow-sm">
             <div className="mb-6">
               <h1 className="text-3xl font-bold mb-2">Welcome to MediCheck!</h1>
-              <p className="text-primary font-semibold uppercase tracking-wider text-sm">
+              <p className="text-primary font-extrabold uppercase tracking-wider text-sm">
                 {isSignup ? 'Sign-Up' : 'Login'}
               </p>
             </div>
@@ -45,7 +45,7 @@ const AuthPage = () => {
                   Already have an account?{' '}
                   <button
                     onClick={() => navigate('/auth/login')}
-                    className="text-primary hover:text-blue-700 font-medium uppercase tracking-wide"
+                    className="text-primary hover:text-blue-700 font-bold uppercase tracking-wide"
                   >
                     Log in
                   </button>
@@ -55,7 +55,7 @@ const AuthPage = () => {
                   Don't have an account?{' '}
                   <button
                     onClick={() => navigate('/auth/signup')}
-                    className="text-primary hover:text-blue-700 font-medium uppercase tracking-wide"
+                    className="text-primary hover:text-blue-700 font-bold uppercase tracking-wide"
                   >
                     Sign up
                   </button>

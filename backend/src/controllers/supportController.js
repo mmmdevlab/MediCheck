@@ -1,424 +1,113 @@
-const SupportRequest = require("../models/SupportRequest");
-const CaregiverAssignment = require("../models/CaregiverAssignment");
-const User = require("../models/User");
-const Appointment = require("../models/Appointment");
-const {
-  createSupportRequestSchema,
-  updateSupportRequestSchema,
-} = require("../validations/supportSchema");
+const supportService = require("../services/supportService");
+const catchAsync = require("../utils/catchAsync");
 
-/*------------------ PATIENT POV ------------------*/
+const parseRequestId = (value) => Number.parseInt(value, 10);
 
-/*------------------Create a new request------------------*/
-const createSupportRequest = async (req, res) => {
+const handleZodError = (res, error) =>
+  res.status(400).json({
+    error: "Validation failed",
+    details: error.errors,
+  });
+
+const createSupportRequest = catchAsync(async (req, res, next) => {
+  const data = await supportService.create(req.user.userId, req.body);
+  res.status(201).json({
+    data,
+    message: "Support request created successfully",
+  });
+});
+
+const getMySupportRequests = async (req, res, next) => {
   try {
-    const validatedData = createSupportRequestSchema.parse(req.body);
-    const patientId = req.user.userId;
-
-    if (validatedData.appointmentId) {
-      const appointment = await Appointment.findOne({
-        where: {
-          id: validatedData.appointmentId,
-          userId: patientId,
-        },
-      });
-
-      if (!appointment) {
-        return res.status(404).json({
-          error: "Appointment not found or you don't have access to it",
-        });
-      }
-    }
-
-    if (validatedData.caregiverId) {
-      const assignment = await CaregiverAssignment.findOne({
-        where: {
-          patientId: patientId,
-          caregiverId: validatedData.caregiverId,
-          isActive: true,
-        },
-      });
-
-      if (!assignment) {
-        return res.status(403).json({
-          error: "This caregiver does not have access to your account",
-        });
-      }
-    }
-
-    const supportRequest = await SupportRequest.create({
-      patientId: patientId,
-      ...validatedData,
-      status: "pending",
-    });
-
-    const createdRequest = await SupportRequest.findByPk(supportRequest.id, {
-      include: [
-        {
-          model: User,
-          as: "caregiver",
-          attributes: ["id", "fullName", "email"],
-        },
-        {
-          model: Appointment,
-          as: "appointment",
-          attributes: ["id", "doctorName", "clinicName", "appointmentDate"],
-        },
-      ],
-    });
-
-    res.status(201).json({
-      message: "Support request created successfully",
-      supportRequest: createdRequest,
-    });
+    const requests = await supportService.getMyRequests(
+      req.user.userId,
+      req.query,
+    );
+    res.status(200).json({ data: requests });
   } catch (error) {
-    if (error.name === "ZodError") {
-      return res.status(400).json({
-        error: "Validation failed",
-        details: error.errors,
-      });
-    }
-
-    console.error("Error creating support request:", error);
-    res.status(500).json({ error: "Failed to create support request" });
+    next(error);
   }
 };
 
-/*------------------Get all requests created by the patient------------------*/
-const getMySupportRequests = async (req, res) => {
+const getSupportRequestById = async (req, res, next) => {
   try {
-    const patientId = req.user.userId;
-
-    const requests = await SupportRequest.findAll({
-      where: { patientId: patientId },
-      include: [
-        {
-          model: User,
-          as: "caregiver",
-          attributes: ["id", "fullName", "email", "phone"],
-        },
-        {
-          model: Appointment,
-          as: "appointment",
-          attributes: ["id", "doctorName", "clinicName", "appointmentDate"],
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
-
-    res.status(200).json(requests);
+    const data = await supportService.getById(
+      req.user.userId,
+      parseRequestId(req.params.id),
+    );
+    res.status(200).json({ data });
   } catch (error) {
-    console.error("Error fetching support requests:", error);
-    res.status(500).json({ error: "Failed to fetch support requests" });
+    next(error);
   }
 };
 
-/*------------------Get a one request by ID (patient must own it)------------------*/
-const getSupportRequestById = async (req, res) => {
+const updateSupportRequest = catchAsync(async (req, res, next) => {
+  const data = await supportService.update(
+    req.user.userId,
+    parseRequestId(req.params.id),
+    req.body,
+  );
+  res.status(200).json({
+    data,
+    message: "Support request updated successfully",
+  });
+});
+
+const deleteSupportRequest = async (req, res, next) => {
   try {
-    const requestId = parseInt(req.params.id, 10);
-    const patientId = req.user.userId;
-
-    if (isNaN(requestId)) {
-      return res.status(400).json({ error: "Invalid request ID format" });
-    }
-
-    const supportRequest = await SupportRequest.findOne({
-      where: {
-        id: requestId,
-        patientId: patientId,
-      },
-      include: [
-        {
-          model: User,
-          as: "caregiver",
-          attributes: ["id", "fullName", "email", "phone"],
-        },
-        {
-          model: Appointment,
-          as: "appointment",
-          attributes: ["id", "doctorName", "clinicName", "appointmentDate"],
-        },
-      ],
-    });
-
-    if (!supportRequest) {
-      return res.status(404).json({ error: "Support request not found" });
-    }
-
-    res.status(200).json(supportRequest);
+    const data = await supportService.remove(
+      req.user.userId,
+      parseRequestId(req.params.id),
+    );
+    res
+      .status(200)
+      .json({ data, message: "Support request deleted successfully" });
   } catch (error) {
-    console.error("Error fetching support request:", error);
-    res.status(500).json({ error: "Failed to fetch support request" });
+    next(error);
   }
 };
 
-/*------------------Update a request (only update message)------------------*/
-const updateSupportRequest = async (req, res) => {
+const getAssignedSupportRequests = async (req, res, next) => {
   try {
-    const requestId = parseInt(req.params.id, 10);
-    const patientId = req.user.userId;
-    const validatedData = updateSupportRequestSchema.parse(req.body);
-
-    if (isNaN(requestId)) {
-      return res.status(400).json({ error: "Invalid request ID format" });
-    }
-
-    const supportRequest = await SupportRequest.findOne({
-      where: {
-        id: requestId,
-        patientId: patientId,
-      },
-    });
-
-    if (!supportRequest) {
-      return res.status(404).json({ error: "Support request not found" });
-    }
-
-    if (supportRequest.status !== "pending") {
-      return res.status(400).json({
-        error: `Cannot update request with status: ${supportRequest.status}`,
-      });
-    }
-
-    await supportRequest.update({
-      message: validatedData.message,
-    });
-
-    const updatedRequest = await SupportRequest.findByPk(supportRequest.id, {
-      include: [
-        {
-          model: User,
-          as: "caregiver",
-          attributes: ["id", "fullName", "email"],
-        },
-        {
-          model: Appointment,
-          as: "appointment",
-          attributes: ["id", "doctorName", "clinicName", "appointmentDate"],
-        },
-      ],
-    });
-
-    res.status(200).json({
-      message: "Support request updated successfully",
-      supportRequest: updatedRequest,
-    });
+    const requests = await supportService.getAssigned(
+      req.user.userId,
+      req.query,
+    );
+    res.status(200).json({ data: requests });
   } catch (error) {
-    if (error.name === "ZodError") {
-      return res.status(400).json({
-        error: "Validation failed",
-        details: error.errors,
-      });
-    }
-
-    console.error("Error updating support request:", error);
-    res.status(500).json({ error: "Failed to update support request" });
+    next(error);
   }
 };
 
-/*------------------Delete (only if pending)------------------*/
-const deleteSupportRequest = async (req, res) => {
-  try {
-    const requestId = parseInt(req.params.id, 10);
-    const patientId = req.user.userId;
+const respondToSupportRequest = catchAsync(async (req, res, next) => {
+  const data = await supportService.respond(
+    req.user.userId,
+    parseRequestId(req.params.id),
+    req.body,
+  );
+  res.status(200).json({
+    data,
+    message: `Support request ${data.status} successfully`,
+  });
+});
 
-    if (isNaN(requestId)) {
-      return res.status(400).json({ error: "Invalid request ID format" });
-    }
-
-    const supportRequest = await SupportRequest.findOne({
-      where: {
-        id: requestId,
-        patientId: patientId,
-      },
-    });
-
-    if (!supportRequest) {
-      return res.status(404).json({ error: "Support request not found" });
-    }
-
-    if (supportRequest.status !== "pending") {
-      return res.status(400).json({
-        error: `Cannot delete request with status: ${supportRequest.status}`,
-      });
-    }
-
-    await supportRequest.destroy();
-
-    res.status(200).json({
-      message: "Support request deleted successfully",
-    });
-  } catch (error) {
-    console.error("Error deleting support request:", error);
-    res.status(500).json({ error: "Failed to delete support request" });
-  }
-};
-
-/*------------------ CAREGIVER POV ------------------*/
-
-/*------------------Get all requests assigned to the caregiver------------------*/
-const getAssignedSupportRequests = async (req, res) => {
-  try {
-    const caregiverId = req.user.userId;
-
-    const requests = await SupportRequest.findAll({
-      where: { caregiverId: caregiverId },
-      include: [
-        {
-          model: User,
-          as: "patient",
-          attributes: ["id", "fullName", "email", "phone"],
-        },
-        {
-          model: Appointment,
-          as: "appointment",
-          attributes: ["id", "doctorName", "clinicName", "appointmentDate"],
-        },
-      ],
-      order: [["createdAt", "DESC"]],
-    });
-
-    res.status(200).json(requests);
-  } catch (error) {
-    console.error("Error fetching assigned requests:", error);
-    res.status(500).json({ error: "Failed to fetch support requests" });
-  }
-};
-
-/*------------------Res to request (accept/decline)------------------*/
-const respondToSupportRequest = async (req, res) => {
-  try {
-    const requestId = parseInt(req.params.id, 10);
-    const caregiverId = req.user.userId;
-    const { status } = req.body;
-
-    if (isNaN(requestId)) {
-      return res.status(400).json({ error: "Invalid request ID format" });
-    }
-
-    if (!["accepted", "declined"].includes(status)) {
-      return res.status(400).json({
-        error: "Invalid status. Must be 'accepted' or 'declined'",
-      });
-    }
-
-    const supportRequest = await SupportRequest.findOne({
-      where: {
-        id: requestId,
-        caregiverId: caregiverId,
-      },
-    });
-
-    if (!supportRequest) {
-      return res.status(404).json({
-        error: "Support request not found or not assigned to you",
-      });
-    }
-
-    if (supportRequest.status !== "pending") {
-      return res.status(400).json({
-        error: `Cannot respond to request with status: ${supportRequest.status}`,
-      });
-    }
-
-    await supportRequest.update({
-      status,
-      respondedAt: new Date(),
-    });
-
-    const updatedRequest = await SupportRequest.findByPk(supportRequest.id, {
-      include: [
-        {
-          model: User,
-          as: "patient",
-          attributes: ["id", "fullName", "email", "phone"],
-        },
-        {
-          model: Appointment,
-          as: "appointment",
-          attributes: ["id", "doctorName", "clinicName", "appointmentDate"],
-        },
-      ],
-    });
-
-    res.status(200).json({
-      message: `Support request ${status} successfully`,
-      supportRequest: updatedRequest,
-    });
-  } catch (error) {
-    console.error("Error responding to support request:", error);
-    res.status(500).json({ error: "Failed to respond to support request" });
-  }
-};
-
-/*------------------Mark as done------------------*/
-const completeSupportRequest = async (req, res) => {
-  try {
-    const requestId = parseInt(req.params.id, 10);
-    const caregiverId = req.user.userId;
-
-    if (isNaN(requestId)) {
-      return res.status(400).json({ error: "Invalid request ID format" });
-    }
-
-    const supportRequest = await SupportRequest.findOne({
-      where: {
-        id: requestId,
-        caregiverId: caregiverId,
-      },
-    });
-
-    if (!supportRequest) {
-      return res.status(404).json({
-        error: "Support request not found or not assigned to you",
-      });
-    }
-
-    if (supportRequest.status !== "accepted") {
-      return res.status(400).json({
-        error: "Can only complete accepted requests",
-      });
-    }
-
-    await supportRequest.update({
-      status: "completed",
-    });
-
-    const updatedRequest = await SupportRequest.findByPk(supportRequest.id, {
-      include: [
-        {
-          model: User,
-          as: "patient",
-          attributes: ["id", "fullName", "email", "phone"],
-        },
-        {
-          model: Appointment,
-          as: "appointment",
-          attributes: ["id", "doctorName", "clinicName", "appointmentDate"],
-        },
-      ],
-    });
-
-    res.status(200).json({
-      message: "Support request marked as completed",
-      supportRequest: updatedRequest,
-    });
-  } catch (error) {
-    console.error("Error completing support request:", error);
-    res.status(500).json({ error: "Failed to complete support request" });
-  }
-};
+const completeSupportRequest = catchAsync(async (req, res, next) => {
+  const data = await supportService.complete(
+    req.user.userId,
+    parseRequestId(req.params.id),
+  );
+  res.status(200).json({
+    data,
+    message: "Support request marked as completed",
+  });
+});
 
 module.exports = {
-  // Patient actions
   createSupportRequest,
   getMySupportRequests,
   getSupportRequestById,
   updateSupportRequest,
   deleteSupportRequest,
-
-  // Caregiver actions
   getAssignedSupportRequests,
   respondToSupportRequest,
   completeSupportRequest,

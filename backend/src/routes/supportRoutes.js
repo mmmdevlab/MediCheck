@@ -7,11 +7,11 @@ router.use(verifyToken);
 
 router.post("/", supportController.createSupportRequest);
 router.get("/", supportController.getMySupportRequests);
+router.get("/assigned", supportController.getAssignedSupportRequests);
 router.get("/:id", supportController.getSupportRequestById);
 router.put("/:id", supportController.updateSupportRequest);
 router.delete("/:id", supportController.deleteSupportRequest);
 
-router.get("/assigned", supportController.getAssignedSupportRequests);
 router.patch("/:id/respond", supportController.respondToSupportRequest);
 router.patch("/:id/complete", supportController.completeSupportRequest);
 

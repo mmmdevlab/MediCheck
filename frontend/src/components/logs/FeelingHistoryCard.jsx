@@ -1,50 +1,78 @@
 import PropTypes from 'prop-types';
+import { useMedicalLogs } from '../../hooks/useMedicalLogs';
+import { FEELING_SCORES } from '../../utils/constants';
+import { formatDate } from '../../utils/dateFormats';
+import { formatTime } from '../../utils/timeFormat';
 
 const FeelingHistoryCard = ({ lastLog }) => {
-  const formatTimestamp = (date) => {
-    if (!date) return 'No logs yet';
+  const { data } = useMedicalLogs(7);
 
-    const now = new Date();
-    const logDate = new Date(date);
-    const isToday = now.toDateString() === logDate.toDateString();
-
-    const timeString = logDate.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-      timeZone: 'Asia/Singapore',
-    });
-
-    return isToday
-      ? `Today at ${timeString}`
-      : logDate.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
-          timeZone: 'Asia/Singapore',
-        });
+  const logs = data?.logs || [];
+  const latestLog = lastLog || logs[0] || null;
+  const stats = data?.stats || {
+    averageScore: null,
+    trend: null,
+    latestAlert: null,
+    alertCount: 0,
   };
 
-  return (
-    <div className="flex items-center gap-3 mt-4 px-2">
-      <span className="text-xs text-gray-500 uppercase tracking-wide font-medium">
-        LAST LOG
-      </span>
-      <div
-        className={`
-          w-2 h-2 rounded-full
-          ${lastLog ? 'bg-green-500' : 'bg-gray-300'}
-        `}
-      />
+  const config = FEELING_SCORES[latestLog?.feelingScore];
+  const latestAlert = stats?.latestAlert;
 
-      <div className="flex items-center gap-2 text-sm">
-        <span className="text-gray-600">
-          {formatTimestamp(lastLog?.createdAt)}
+  return (
+    <div>
+      <div className="flex items-center gap-4 mt-2 p-4">
+        <span className="text-[14px] text-gray-600 font-bold uppercase tracking-widest">
+          last update
         </span>
-        {lastLog?.label && (
-          <span className="font-bold text-gray-900">"{lastLog.label}"</span>
-        )}
+
+        <div className="flex items-center gap-4">
+          <div
+            className={`w-4 h-4 rounded-full ${latestLog ? 'animate-pulse' : ''}`}
+            style={{ backgroundColor: config?.color || '#D1D5DB' }}
+          />
+
+          <span className="text-md font-regular text-gray-400">
+            {latestLog
+              ? `Today at ${formatTime(latestLog.createdAt)}`
+              : 'Click the card above, to log your feelings'}
+          </span>
+
+          {latestLog?.label && (
+            <span className="text-md font-bold text-gray-900 ml-1">
+              "
+              {FEELING_SCORES[latestLog?.feelingScore]?.label ||
+                latestLog?.label}
+              "
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 p-4 bg-[#EEF1F5] rounded-2xl border border-gray-100">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pr-4 border-r border-gray-200">
+          <span className="text-sm font-bold text-blue-600 uppercase tracking-widest">
+            Average
+          </span>
+
+          <span className="text-sm font-semibold text-black">
+            {FEELING_SCORES[stats?.averageScore]?.label || 'N/A'}
+          </span>
+        </div>
+
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pl-2">
+          <span className="text-sm font-bold text-red-600 uppercase tracking-widest">
+            Alerts Sent
+          </span>
+
+          <span className="text-sm font-semibold text-black">
+            {latestAlert
+              ? `${formatDate(latestAlert.createdAt)} (${
+                  FEELING_SCORES[latestAlert.feelingScore]?.label || 'Unwell'
+                })`
+              : 'No alerts'}
+          </span>
+        </div>
       </div>
     </div>
   );

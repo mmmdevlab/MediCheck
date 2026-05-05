@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import FormInput from '../UI/FormInput';
@@ -12,9 +12,13 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
+const getErrorMessage = (error, fallback) =>
+  error?.response?.data?.error || error?.message || fallback;
+
 const LoginForm = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [serverError, setServerError] = useState('');
 
   const {
     register,
@@ -25,11 +29,12 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data) => {
+    setServerError('');
     try {
       await login(data);
       navigate('/dashboard');
     } catch (error) {
-      alert(error.response?.data?.error || 'Login failed');
+      setServerError(getErrorMessage(error, 'Login failed'));
     }
   };
 
@@ -50,6 +55,10 @@ const LoginForm = () => {
         register={register('password')}
         error={errors.password?.message}
       />
+
+      {serverError && (
+        <p className="text-sm text-red-600 font-medium">{serverError}</p>
+      )}
 
       <ActionButton
         type="submit"

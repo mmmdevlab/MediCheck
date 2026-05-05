@@ -8,8 +8,6 @@ const SupportRequest = require("./SupportRequest");
 const MedicalLog = require("./MedicalLog");
 const Task = require("./Task");
 
-/*------- User Appointments -------*/
-
 User.hasMany(Appointment, {
   foreignKey: "userId",
   as: "appointments",
@@ -20,8 +18,6 @@ Appointment.belongsTo(User, {
   foreignKey: "userId",
   as: "patient",
 });
-
-/*------- User medial logs ------*/
 
 User.hasMany(MedicalLog, {
   foreignKey: "userId",
@@ -34,9 +30,6 @@ MedicalLog.belongsTo(User, {
   as: "user",
 });
 
-/*------- Caregiver assignment -------*/
-
-// Patient side
 User.hasMany(CaregiverAssignment, {
   foreignKey: "patientId",
   as: "caregiverAssignments",
@@ -48,7 +41,6 @@ CaregiverAssignment.belongsTo(User, {
   as: "patient",
 });
 
-// Caregiver side
 User.hasMany(CaregiverAssignment, {
   foreignKey: "caregiverId",
   as: "patientAssignments",
@@ -60,9 +52,6 @@ CaregiverAssignment.belongsTo(User, {
   as: "caregiver",
 });
 
-/*------- support request -------*/
-
-// Patient side
 User.hasMany(SupportRequest, {
   foreignKey: "patientId",
   as: "createdSupportRequests",
@@ -74,7 +63,6 @@ SupportRequest.belongsTo(User, {
   as: "patient",
 });
 
-// Caregiver side
 User.hasMany(SupportRequest, {
   foreignKey: "caregiverId",
   as: "assignedSupportRequests",
@@ -86,7 +74,6 @@ SupportRequest.belongsTo(User, {
   as: "caregiver",
 });
 
-// Appointment side
 Appointment.hasMany(SupportRequest, {
   foreignKey: "appointmentId",
   as: "supportRequests",
@@ -98,9 +85,6 @@ SupportRequest.belongsTo(Appointment, {
   as: "appointment",
 });
 
-/*------- Task -------*/
-
-// Appointment side
 Appointment.hasMany(Task, {
   foreignKey: "appointmentId",
   as: "tasks",
@@ -112,7 +96,6 @@ Task.belongsTo(Appointment, {
   as: "appointment",
 });
 
-// Patient side
 User.hasMany(Task, {
   foreignKey: "patientId",
   as: "tasks",

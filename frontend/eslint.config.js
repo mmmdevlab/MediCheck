@@ -30,7 +30,8 @@ export default defineConfig([
       'react/prop-types': 'off',
       'react/no-unescaped-entities': 'off',
       'no-unused-vars': 'off',
-      'css.lint.unknownAtRule': 'ignore',
+      'css.lint.unknownAtRule': 'off',
+      '@tanstack/query/exhaustive-deps': 'error',
     },
   },
 ]);

@@ -6,6 +6,7 @@ const AppError = require("./src/utils/AppError");
 dotenv.config();
 
 const { sequelize } = require("./src/config/database");
+require("./src/models");
 
 const authRoutes = require("./src/routes/authRoutes");
 const appointmentRoutes = require("./src/routes/appointmentRoutes");
@@ -33,20 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.json({
-    status: "OK",
-    message: "MediCheck API is running",
-    timestamp: new Date().toISOString(),
-    endpoints: {
-      auth: "/api/auth",
-      appointments: "/api/appointments",
-      caregivers: "/api/caregivers",
-      patients: "/api/patients",
-      support: "/api/support",
-      logs: "/api/logs",
-      task: "/api/tasks",
-    },
-  });
+  res.json({ status: "MediCheck API is running" });
 });
 
 app.use("/api/auth", authRoutes);
@@ -57,7 +45,7 @@ app.use("/api/support", supportRoutes);
 app.use("/api/logs", medicalLogRoutes);
 app.use("/api/tasks", taskRoutes);
 
-app.all("{*path}", (req, res, next) => {
+app.all(/.*/, (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
@@ -67,30 +55,14 @@ const startServer = async () => {
   try {
     await sequelize.authenticate();
     console.log("Database connected successfully");
+    await sequelize.sync();
     console.log("Models and associations loaded");
 
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log(
-        `Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`,
-      );
-    });
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (error) {
     console.error("Server startup failed:", error.message);
-    console.error(error.stack);
     process.exit(1);
   }
 };
-
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection at:", promise, "reason:", reason);
-  process.exit(1);
-});
-
-process.on("uncaughtException", (error) => {
-  console.error("Uncaught Exception:", error);
-  process.exit(1);
-});
 
 startServer();

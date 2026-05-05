@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import FormInput from '../UI/FormInput';
@@ -10,7 +10,7 @@ import ActionButton from '../UI/ActionButton';
 
 const signupSchema = z
   .object({
-    full_name: z.string().min(2, 'Name required'),
+    fullName: z.string().min(2, 'Name required'),
     email: z.string().email('Invalid email'),
     password: z
       .string()
@@ -26,9 +26,13 @@ const signupSchema = z
     path: ['re_password'],
   });
 
+const getErrorMessage = (error, fallback) =>
+  error?.response?.data?.error || error?.message || fallback;
+
 const SignupForm = () => {
   const { signup } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [serverError, setServerError] = useState('');
 
   const {
     register,
@@ -40,12 +44,13 @@ const SignupForm = () => {
   });
 
   const onSubmit = async (data) => {
+    setServerError('');
     try {
       const { re_password, ...signupData } = data;
       await signup(signupData);
       navigate('/dashboard');
     } catch (error) {
-      alert(error.response?.data?.error || 'Signup failed');
+      setServerError(getErrorMessage(error, 'Signup failed'));
     }
   };
 
@@ -54,8 +59,8 @@ const SignupForm = () => {
       <FormInput
         label="Full Name"
         placeholder="jenny lim"
-        register={register('full_name')}
-        error={errors.full_name?.message}
+        register={register('fullName')}
+        error={errors.fullName?.message}
         required
       />
 
@@ -103,6 +108,10 @@ const SignupForm = () => {
         register={register('phone')}
         error={errors.phone?.message}
       />
+
+      {serverError && (
+        <p className="text-sm text-red-600 font-medium">{serverError}</p>
+      )}
 
       <ActionButton
         type="submit"

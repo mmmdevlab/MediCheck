@@ -1,218 +1,78 @@
-const User = require("../models/User");
-const MedicalLog = require("../models/MedicalLog");
-const CaregiverAssignment = require("../models/CaregiverAssignment");
 const { createMedicalLogSchema } = require("../validations/medicalLogSchema");
-const { Op } = require("sequelize");
+const medicalLogService = require("../services/medicalLogService");
+const catchAsync = require("../utils/catchAsync");
 
-/*------------------ PATIENT POV ------------------*/
+const createMedicalLog = catchAsync(async (req, res, next) => {
+  const validatedData = createMedicalLogSchema.parse(req.body);
+  const userId = req.user.userId;
+  const result = await medicalLogService.createMedicalLog(
+    userId,
+    validatedData.feelingScore,
+  );
+  res.status(201).json(result);
+});
 
-/*------------------ Log today's feeling ------------------*/
-const createMedicalLog = async (req, res) => {
-  try {
-    const validatedData = createMedicalLogSchema.parse(req.body);
-    const userId = req.user.userId;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const existingLog = await MedicalLog.findOne({
-      where: {
-        userId: userId,
-        createdAt: {
-          [Op.gte]: today,
-          [Op.lt]: tomorrow,
-        },
-      },
-    });
-
-    if (existingLog) {
-      await existingLog.destroy();
-    }
-
-    const log = await MedicalLog.create({
-      userId: userId,
-      feelingScore: validatedData.feelingScore,
-    });
-
-    res.status(201).json({
-      message: existingLog
-        ? "Today's feeling updated successfully"
-        : "Feeling logged successfully",
-      log: log,
-    });
-  } catch (error) {
-    if (error.name === "ZodError") {
-      return res.status(400).json({
-        error: "Validation failed",
-        details: error.errors,
-      });
-    }
-    console.error("Error creating medical log:", error);
-    res.status(500).json({ error: "Failed to log feeling" });
+const getMyLogs = catchAsync(async (req, res, next) => {
+  const userId = req.user.userId;
+  const days = parseInt(req.query.days) || 7;
+  if (days < 1 || days > 30) {
+    return res.status(400).json({ error: "Days must be between 1 and 30" });
   }
-};
+  const result = await medicalLogService.getUserLogStats(userId, days);
+  res.status(200).json({
+    days,
+    count: result.logs.length,
+    ...result,
+  });
+});
 
-/*------------------ Get my logs (last x days) ------------------*/
-const getMyLogs = async (req, res) => {
-  try {
-    const userId = req.user.userId;
-    const days = parseInt(req.query.days) || 7;
-
-    if (days < 1 || days > 30) {
-      return res.status(400).json({
-        error: "Days must be between 1 and 30",
-      });
-    }
-
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    startDate.setHours(0, 0, 0, 0);
-
-    const logs = await MedicalLog.findAll({
-      where: {
-        userId: userId,
-        createdAt: {
-          [Op.gte]: startDate,
-        },
-      },
-      order: [["createdAt", "DESC"]],
-      attributes: ["id", "feelingScore", "createdAt"],
-    });
-
-    res.status(200).json({
-      days: days,
-      count: logs.length,
-      logs: logs,
-    });
-  } catch (error) {
-    console.error("Error fetching medical logs:", error);
-    res.status(500).json({ error: "Failed to fetch logs" });
+const getPatientLatestLog = catchAsync(async (req, res, next) => {
+  const caregiverId = req.user.userId;
+  const patientId = parseInt(req.params.patientId, 10);
+  if (isNaN(patientId)) {
+    return res.status(400).json({ error: "Invalid patient ID format" });
   }
-};
-
-/*------------------ CAREGIVER POV ------------------*/
-
-/*------------------ View patient's latest log ------------------*/
-const getPatientLatestLog = async (req, res) => {
-  try {
-    const caregiverId = req.user.userId;
-    const patientId = parseInt(req.params.patientId, 10);
-
-    if (isNaN(patientId)) {
-      return res.status(400).json({ error: "Invalid patient ID format" });
-    }
-
-    const assignment = await CaregiverAssignment.findOne({
-      where: {
-        patientId: patientId,
-        caregiverId: caregiverId,
-        isActive: true,
-      },
+  const latestLog = await medicalLogService.getPatientLatestLog(
+    caregiverId,
+    patientId,
+  );
+  if (!latestLog) {
+    return res.status(404).json({
+      message: "No logs found for this patient",
     });
-
-    if (!assignment) {
-      return res.status(403).json({
-        error: "You do not have access to this patient's logs",
-      });
-    }
-
-    const latestLog = await MedicalLog.findOne({
-      where: { userId: patientId },
-      order: [["createdAt", "DESC"]],
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: ["id", "fullName"],
-        },
-      ],
-    });
-
-    if (!latestLog) {
-      return res.status(404).json({
-        message: "No logs found for this patient",
-      });
-    }
-
-    res.status(200).json(latestLog);
-  } catch (error) {
-    console.error("Error fetching patient's latest log:", error);
-    res.status(500).json({ error: "Failed to fetch patient's log" });
   }
-};
+  res.status(200).json(latestLog);
+});
 
-/*------------------ View patient's log history ------------------*/
-const getPatientLogs = async (req, res) => {
-  try {
-    const caregiverId = req.user.userId;
-    const patientId = parseInt(req.params.patientId, 10);
-    const days = parseInt(req.query.days) || 7;
-
-    if (isNaN(patientId)) {
-      return res.status(400).json({ error: "Invalid patient ID format" });
-    }
-
-    if (days < 1 || days > 30) {
-      return res.status(400).json({
-        error: "Days must be between 1 and 30",
-      });
-    }
-
-    const assignment = await CaregiverAssignment.findOne({
-      where: {
-        patientId: patientId,
-        caregiverId: caregiverId,
-        isActive: true,
-      },
-    });
-
-    if (!assignment) {
-      return res.status(403).json({
-        error: "You do not have access to this patient's logs",
-      });
-    }
-
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    startDate.setHours(0, 0, 0, 0);
-
-    const logs = await MedicalLog.findAll({
-      where: {
-        userId: patientId,
-        createdAt: {
-          [Op.gte]: startDate,
-        },
-      },
-      order: [["createdAt", "DESC"]],
-      include: [
-        {
-          model: User,
-          as: "user",
-          attributes: ["id", "fullName"],
-        },
-      ],
-    });
-
-    res.status(200).json({
-      patientId: patientId,
-      days: days,
-      count: logs.length,
-      logs: logs,
-    });
-  } catch (error) {
-    console.error("Error fetching patient logs:", error);
-    res.status(500).json({ error: "Failed to fetch patient logs" });
+const getPatientLogs = catchAsync(async (req, res, next) => {
+  const caregiverId = req.user.userId;
+  const patientId = parseInt(req.params.patientId, 10);
+  const days = parseInt(req.query.days) || 7;
+  if (isNaN(patientId)) {
+    return res.status(400).json({ error: "Invalid patient ID format" });
   }
-};
+  if (days < 1 || days > 30) {
+    return res.status(400).json({
+      error: "Days must be between 1 and 30",
+    });
+  }
+  const logs = await medicalLogService.getPatientLogs(
+    caregiverId,
+    patientId,
+    days,
+  );
+  res.status(200).json({
+    patientId,
+    days,
+    count: logs.length,
+    logs,
+  });
+});
 
 module.exports = {
-  // Patient actions
   createMedicalLog,
   getMyLogs,
 
-  // Caregiver actions
   getPatientLatestLog,
   getPatientLogs,
 };

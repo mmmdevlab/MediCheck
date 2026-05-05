@@ -8,12 +8,12 @@ const appointmentSchema = z.object({
       "Invalid date format. Use ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)",
   }),
 
-  doctorName: z.string().max(255).optional(),
-  clinicName: z.string().max(255).optional(),
-  clinicId: z.number().int().positive().optional(),
-  location: z.string().max(500).optional(),
+  doctorName: z.string().max(255).nullable().optional(),
+  clinicName: z.string().max(255).nullable().optional(),
+  clinicId: z.number().int().positive().nullable().optional(),
+  location: z.string().max(500).nullable().optional(),
   status: z.enum(["scheduled", "completed", "cancelled"]).optional(),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 const appointmentUpdateSchema = appointmentSchema.partial();
