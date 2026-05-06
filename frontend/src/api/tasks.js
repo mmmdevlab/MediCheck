@@ -1,4 +1,4 @@
-import apiClient from './client';
+import apiClient from './clientFetch';
 
 export const getTasksByAppointment = async (appointmentId) => {
   const response = await apiClient.get('/tasks', { params: { appointmentId } });

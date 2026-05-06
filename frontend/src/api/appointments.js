@@ -1,4 +1,4 @@
-import apiClient from './client';
+import apiClient from '../api/clientFetch';
 
 export const getAllAppointments = async () => {
   const response = await apiClient.get('/appointments');

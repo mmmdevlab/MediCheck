@@ -1,4 +1,4 @@
-import apiClient from './client';
+import apiClient from '../api/clientFetch';
 
 export const createSupportRequest = async (requestData) => {
   const response = await apiClient.post('/support', requestData);
