@@ -24,7 +24,7 @@ const PORT = 3000;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://medicheck-production-7517.up.railway.app/api",
+  "https://medicheck-production-7517.up.railway.app",
 ];
 
 app.use(
