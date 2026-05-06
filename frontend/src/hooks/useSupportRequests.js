@@ -29,8 +29,12 @@ export const useCreateSupportRequest = () => {
   return useMutation({
     mutationFn: (requestData) => createSupportRequest(requestData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: supportRequestKeys.myRequests });
-      queryClient.invalidateQueries({ queryKey: supportRequestKeys.assignedRequests });
+      queryClient.invalidateQueries({
+        queryKey: supportRequestKeys.myRequests,
+      });
+      queryClient.invalidateQueries({
+        queryKey: supportRequestKeys.assignedRequests,
+      });
       queryClient.invalidateQueries({ queryKey: ['appointments'] });
     },
   });
@@ -62,6 +66,7 @@ export const useRespondToSupportRequest = () => {
       queryClient.invalidateQueries({
         queryKey: supportRequestKeys.myRequests,
       });
+      queryClient.invalidateQueries({ queryKey: ['appointments'] });
     },
   });
 };
@@ -78,6 +83,7 @@ export const useCompleteSupportRequest = () => {
       queryClient.invalidateQueries({
         queryKey: supportRequestKeys.myRequests,
       });
+      queryClient.invalidateQueries({ queryKey: ['appointments'] });
     },
   });
 };

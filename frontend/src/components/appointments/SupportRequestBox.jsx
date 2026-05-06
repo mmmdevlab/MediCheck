@@ -1,5 +1,5 @@
 import React from 'react';
-import { REQUEST_TYPE_CONFIG } from '../../utils/constants';
+import { REQUEST_STATUS, REQUEST_TYPE_CONFIG } from '../../utils/constants';
 import { formatDate } from '../../utils/dateFormats';
 
 const SupportRequestBox = ({ supportRequest }) => {
@@ -16,8 +16,9 @@ const SupportRequestBox = ({ supportRequest }) => {
 
   const { status, requestType, message, caregiver, createdAt } = supportRequest;
 
-  const isPending = status === 'pending';
-  const isAccepted = status === 'accepted';
+  const isPending = status === REQUEST_STATUS.PENDING;
+  const isAccepted = status === REQUEST_STATUS.ACCEPTED;
+  const isDeclined = status === REQUEST_STATUS.DECLINED;
 
   const requestConfig = REQUEST_TYPE_CONFIG[requestType] || {};
   const RequestIcon = requestConfig.icon;
@@ -34,6 +35,7 @@ const SupportRequestBox = ({ supportRequest }) => {
           'rounded-3xl p-4',
           isPending ? 'border border-yellow-200 bg-yellow-50' : '',
           isAccepted ? 'border border-green-200 bg-green-50' : '',
+          isDeclined ? 'border border-red-200 bg-red-50' : '',
         ]
           .filter(Boolean)
           .join(' ')}
@@ -43,6 +45,7 @@ const SupportRequestBox = ({ supportRequest }) => {
             'mb-2 flex items-center gap-2 text-sm font-bold',
             isPending ? 'text-yellow-900' : '',
             isAccepted ? 'text-green-900' : '',
+            isDeclined ? 'text-red-900' : '',
           ]
             .filter(Boolean)
             .join(' ')}
@@ -50,7 +53,9 @@ const SupportRequestBox = ({ supportRequest }) => {
           {RequestIcon && <RequestIcon className="h-4 w-4" />}
           <span>{requestLabel}</span>
           <span>·</span>
-          <span>{isPending ? 'Pending' : 'Confirmed'}</span>
+          <span>
+            {isPending ? 'Pending' : isAccepted ? 'Confirmed' : 'Declined'}
+          </span>
         </div>
 
         {message && <p className="mb-2 text-sm text-gray-600">"{message}"</p>}
@@ -64,6 +69,12 @@ const SupportRequestBox = ({ supportRequest }) => {
         {isPending && (
           <p className="text-sm text-gray-500">
             Requested {formatDate(createdAt)}
+          </p>
+        )}
+
+        {isDeclined && (
+          <p className="text-sm text-red-700">
+            Declined by {caregiver?.fullName || 'caregiver'}
           </p>
         )}
       </div>

@@ -54,6 +54,8 @@ const AppointmentForm = ({ appointment = null, onSubmit, onCancel }) => {
 
     if (!formData.appointmentDate) {
       newErrors.appointmentDate = 'Date is required';
+    } else if (formData.appointmentDate < formatTime(new Date(), 'date')) {
+      newErrors.appointmentDate = 'Date cannot be in the past';
     }
 
     if (!formData.appointmentTime) {

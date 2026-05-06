@@ -128,6 +128,7 @@ const AppointmentCard = ({
           p-3 rounded-xl flex items-center gap-3 text-sm
           ${supportRequest.status === 'accepted' ? 'bg-green-100 border border-green-200 text-green-900' : ''}
           ${supportRequest.status === 'pending' ? 'bg-yellow-100 border border-yellow-200 text-yellow-900' : ''}
+          ${supportRequest.status === 'declined' ? 'bg-red-100 border border-red-200 text-red-900' : ''}
         `}
         >
           {supportRequest.status === 'accepted' && (
@@ -137,7 +138,11 @@ const AppointmentCard = ({
           )}
           <span>
             <strong>{supportRequest.caregiver?.fullName}</strong>{' '}
-            {supportRequest.status === 'accepted' ? 'accepted' : 'pending'}{' '}
+            {supportRequest.status === 'accepted'
+              ? 'accepted'
+              : supportRequest.status === 'declined'
+                ? 'declined'
+                : 'pending'}{' '}
             {supportRequest.requestType}
           </span>
         </div>
@@ -349,6 +354,21 @@ const AppointmentCard = ({
                   className="flex-1"
                 >
                   RESCHEDULE
+                </ActionButton>
+
+                <ActionButton
+                  variant="danger"
+                  onClick={() => onDelete(id)}
+                  className="
+                  flex-1 px-4 py-3 rounded-full
+                  bg-[#EE4444] hover:bg-red-600
+                  text-white font-semibold text-sm
+                  transition-colors
+                  flex items-center justify-center gap-2
+                "
+                >
+                  <Trash2 className="w-4 h-4" />
+                  DELETE
                 </ActionButton>
               </>
             )}

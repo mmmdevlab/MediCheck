@@ -12,23 +12,30 @@ const TasksPage = () => {
   const { mutate: respond } = useRespondToSupportRequest();
   const { mutate: complete } = useCompleteSupportRequest();
   const [dialog, setDialog] = useState({ open: false });
+  const [historyFilter, setHistoryFilter] = useState('completed');
 
   const closeDialog = () => setDialog({ open: false });
+
+  const filteredRequests = useMemo(() => {
+    const normalizedFilter = String(historyFilter || 'completed').toLowerCase();
+
+    const historyRequests = requests.filter((request) => {
+      const status = String(request.status || '').toLowerCase();
+      return status === 'completed' || status === 'declined';
+    });
+
+    return historyRequests
+      .filter(
+        (request) =>
+          String(request.status || '').toLowerCase() === normalizedFilter
+      )
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }, [requests, historyFilter]);
 
   const pendingRequests = useMemo(() => {
     return requests
       .filter((r) => r.status === 'pending')
       .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  }, [requests]);
-
-  const pastRequests = useMemo(() => {
-    return requests
-      .filter((r) => r.status !== 'pending')
-      .sort((a, b) => {
-        if (a.status === 'completed' && b.status !== 'completed') return 1;
-        if (a.status !== 'completed' && b.status === 'completed') return -1;
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      });
   }, [requests]);
 
   const handleAccept = (id) => respond({ requestId: id, status: 'accepted' });
@@ -95,20 +102,38 @@ const TasksPage = () => {
           )}
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <p className="text-[10] font-extrabold text-gray-600 uppercase tracking-widest mb-1">
-              History
-            </p>
-            <h1 className="text-3xl font-bold text-black">All Requests</h1>
+        {!isLoading && filteredRequests.length > 0 && (
+          <div className="space-y-4">
+            <div>
+              <p className="text-[10] font-extrabold text-gray-600 uppercase tracking-widest mb-1">
+                History
+              </p>
+              <h1 className="text-3xl font-bold text-black">Task History</h1>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {['completed', 'declined'].map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setHistoryFilter(filter)}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold capitalize transition ${
+                      historyFilter === filter
+                        ? 'bg-primary text-white'
+                        : 'border border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <SupportRequestCard
+              mode="history"
+              requests={filteredRequests}
+              onComplete={handleComplete}
+              onUndo={handleUndo}
+            />
           </div>
-          <SupportRequestCard
-            mode="history"
-            requests={pastRequests}
-            onComplete={handleComplete}
-            onUndo={handleUndo}
-          />
-        </div>
+        )}
       </div>
 
       <ConfirmDialog
