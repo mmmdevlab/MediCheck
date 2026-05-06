@@ -20,9 +20,18 @@ const errorHandler = require("./src/middleware/errorHandler");
 const requestLogger = require("./src/middleware/requestLogger");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://medicheck-app.netlify.app",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+);
+app.options("*", cors());
+
 app.use(requestLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
