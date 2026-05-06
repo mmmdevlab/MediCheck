@@ -61,8 +61,8 @@ const NavBar = () => {
       </header>
 
       {user && navLinks.length > 0 && (
-        <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50">
-          <div className="bg-white rounded-full shadow-2xl border border-gray-100 px-1 py-1 bg-white/70 backdrop-blur-md">
+        <nav className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
+          <div className="bg-white rounded-full shadow-2xl border border-gray-200 px-1 py-1 bg-white/70 backdrop-blur-md">
             <ul className="flex items-center gap-2">
               {navLinks.map(({ to, label, icon }) => (
                 <li key={to}>

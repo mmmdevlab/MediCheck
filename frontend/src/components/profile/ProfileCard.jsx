@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Trash2 } from 'lucide-react';
 import { ROLES } from '../../utils/constants';
 import ConfirmDialog from '../UI/ConfirmDialog';
-import apiClient from '../../api/client';
+import { deleteAccount } from '../../api/users';
 import ActionButton from '../UI/ActionButton';
 
 const ProfileCard = ({ user, patientCount }) => {
@@ -22,7 +22,7 @@ const ProfileCard = ({ user, patientCount }) => {
       onConfirm: async () => {
         setIsDeleting(true);
         try {
-          await apiClient.delete('/auth/deleteMe');
+          await deleteAccount();
           signout();
         } catch (error) {
           setDialog({
