@@ -7,15 +7,15 @@ const ProductInfo = () => {
   return (
     <div className="w-1/2 bg-white p-12 flex flex-col justify-center">
       <div className="mb-4">
-        <p className="font-body text-xs font-bold tracking-wider text-gray-400 mb-2">
-          WELCOME TO MEDICHECK
+        <p className="font-body text-[14] font-bold tracking-wider uppercase text-gray-400 mb-2">
+          Welcome to <span className="text-primary">medicheck</span>
         </p>
         <h2 className="text-4xl font-bold leading-tight mb-6">
-          Healthcare is better when it's handled together.
+          Healthcare is better when <br /> it's handled together.
         </h2>
         <p className="font-body text-gray-600 leading-relaxed">
           Managing health shouldn't feel like a solo mission.{' '}
-          <span className="font-bold text-primary">MediCheck</span> bridges the
+          <span className="font-bold text-primary ">MediCheck</span> bridges the
           gap between patients, clinics, and the people who care about them
           most. Whether you're organizing your own schedule or supporting a
           loved one, we ensure no detail is overlooked and no appointment is
@@ -29,7 +29,7 @@ const ProductInfo = () => {
         className="w-full h-[200px] object-cover rounded-3xl mb-8"
       />
 
-      <div className="space-y-6 max-w-3xl">
+      <div className="space-y-4 max-w-3xl">
         {[
           {
             title: 'Track Appointments',
@@ -50,7 +50,7 @@ const ProductInfo = () => {
         ].map((item, i) => (
           <div
             key={i}
-            className="flex flex-col md:flex-row items-start gap-2 md:gap-5 border-l-2 border-primary/20 pl-4 md:border-none md:pl-0"
+            className="flex flex-col md:flex-row items-start gap-1 md:gap-5 border-l-2 border-primary/20 pl-4 md:border-none md:pl-0"
           >
             <h3 className="text-md font-bold text-primary min-w-[180px] shrink-0 pt-0.5">
               {item.title}

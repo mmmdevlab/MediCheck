@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import apiClient from '../api/client';
+import apiClient from '../api/clientFetch';
 
 export const AuthContext = createContext();
 
@@ -57,13 +57,9 @@ export const AuthProvider = ({ children }) => {
   });
 
   const refreshAccessToken = async () => {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (!refreshToken) throw new Error('No refresh token');
-
     try {
-      const res = await apiClient.post('/auth/refresh', { refreshToken });
-      localStorage.setItem('accessToken', res.data.accessToken);
-      return res.data.accessToken;
+      const newToken = await apiClient.refreshAccessToken();
+      return newToken;
     } catch (error) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');

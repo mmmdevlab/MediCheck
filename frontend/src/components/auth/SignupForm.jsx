@@ -76,7 +76,7 @@ const SignupForm = () => {
       <FormInput
         label="Password"
         type="password"
-        placeholder="***************"
+        placeholder="********"
         register={register('password')}
         error={errors.password?.message}
         required
@@ -85,7 +85,7 @@ const SignupForm = () => {
       <FormInput
         label="Re-type Password"
         type="password"
-        placeholder="***************"
+        placeholder="********"
         register={register('re_password')}
         error={errors.re_password?.message}
         required
