@@ -15,7 +15,7 @@
   },
   "scripts": {
     "dev": "bun --watch server.js",
-    "start": "bun server.js",
+    "start": "bun run server.js",
     "seed": "bun seed.js",
     "test": "bun test-connection.js"
   },

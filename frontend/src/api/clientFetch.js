@@ -1,4 +1,6 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const BASE_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
 const TIMEOUT = 10000;
 
 const isAuthEndpoint = (url = '') =>
@@ -90,7 +92,6 @@ const request = async (method, url, options = {}) => {
     signal,
   };
   if (data !== null) {
-    // Allow callers to pass FormData or other body types
     if (data instanceof FormData) {
       delete fetchOptions.headers['Content-Type'];
       fetchOptions.body = data;
@@ -120,7 +121,6 @@ const request = async (method, url, options = {}) => {
       };
     }
 
-    // Handle 401 specially to attempt refresh & retry
     if (res.status === 401 && !isAuthEndpoint(url)) {
       // queue and refresh logic
       if (!isRefreshing) {
@@ -138,7 +138,6 @@ const request = async (method, url, options = {}) => {
           const newToken = await performRefresh(refreshToken);
           processQueue(null, newToken);
           isRefreshing = false;
-          // retry original request with new token
           if (newToken) {
             reqHeaders.Authorization = `Bearer ${newToken}`;
           } else {
@@ -149,7 +148,7 @@ const request = async (method, url, options = {}) => {
             error.response = { data: parsed, status: res.status };
             throw error;
           }
-          // retry
+
           return await request(method, url, options);
         } catch (refreshError) {
           localStorage.removeItem('accessToken');
