@@ -30,7 +30,10 @@ const getAllAppointments = catchAsync(async (req, res, next) => {
     const data = apt.toJSON();
     data.supportRequest =
       (data.supportRequests || []).find(
-        (r) => r.status === "pending" || r.status === "accepted",
+        (r) =>
+          r.status === "pending" ||
+          r.status === "accepted" ||
+          r.status === "declined",
       ) || null;
     delete data.supportRequests;
     return data;
