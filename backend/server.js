@@ -22,9 +22,28 @@ const requestLogger = require("./src/middleware/requestLogger");
 const app = express();
 const PORT = 3000;
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://medicheck-production-7517.up.railway.app/api",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  }),
+);
+
 app.use(requestLogger);
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
