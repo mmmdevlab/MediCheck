@@ -9,11 +9,7 @@ if (!databaseUrl) {
   );
 }
 
-const isProduction = process.env.NODE_ENV === "production";
-const useSsl =
-  process.env.DB_SSL !== undefined
-    ? process.env.DB_SSL === "true"
-    : isProduction;
+const useSsl = true;
 const rejectUnauthorized =
   process.env.DB_SSL_REJECT_UNAUTHORIZED !== undefined
     ? process.env.DB_SSL_REJECT_UNAUTHORIZED === "true"
@@ -21,7 +17,7 @@ const rejectUnauthorized =
 
 const sequelize = new Sequelize(databaseUrl, {
   dialect: "postgres",
-  logging: isProduction ? false : console.log,
+  logging: console.log,
   ...(useSsl
     ? {
         dialectOptions: {
