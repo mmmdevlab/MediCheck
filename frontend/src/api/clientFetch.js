@@ -1,5 +1,5 @@
 const BASE_URL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL}/api`
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
   : '/api';
 const TIMEOUT = 10000;
 
@@ -159,7 +159,6 @@ const request = async (method, url, options = {}) => {
           throw refreshError;
         }
       } else {
-        // push to queue
         return new Promise((resolve, reject) => {
           failedQueue.push({
             resolve: async (token) => {
