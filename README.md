@@ -14,7 +14,6 @@
 - Tailwind CSS
 - React Router DOM
 - Lucide React
-- Axios
 - React Hook Form
 - Zod
 - TanStack Query
@@ -49,7 +48,7 @@
 
 # MediCheck: Healthcare Coordination Platform
 
-**Live Demo:** [Deployed Link Here]
+**Live Demo:** [Click Here to Access](medicheck-app.netlify.app)
 **Author:** @Mathisha Mahawalage
 
 **MediCheck** is a privacy-first multiplayer appointment management system designed to create an accountability safety net between patients and their trusted caregivers.
@@ -265,7 +264,6 @@ This project introduced several new technologies compared to my previous work:
 - [TanStack Query](https://tanstack.com/query/latest) — Server state management with caching and synchronization
 - [React Hook Form](https://react-hook-form.com) — Form handling with minimal re-renders
 - [Zod](https://zod.dev) — Runtime schema validation (shared frontend/backend)
-- [Axios](https://axios-http.com/) — Promise-based HTTP client with interceptors
 - [React Router DOM](https://reactrouter.com/) — Client-side routing for single-page applications
 - [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS framework for rapid UI development
 - [Lucide React](https://lucide.dev/) — Consistent, customizable icon library
@@ -284,3 +282,5 @@ This project introduced several new technologies compared to my previous work:
 - [Netlify](https://netlify.com/) — Frontend deployment with automatic builds from GitHub
 
 ## References
+
+[reference link](doc/references/reference.md)
