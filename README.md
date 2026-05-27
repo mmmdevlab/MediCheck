@@ -48,7 +48,7 @@
 
 # MediCheck: Healthcare Coordination Platform
 
-**Live Demo:** [Click Here to Access](medicheck-app.netlify.app)
+**Live Demo:** [Click Here to Access](https://medicheck-app.netlify.app/dashboard)
 **Author:** @Mathisha Mahawalage
 
 **MediCheck** is a privacy-first multiplayer appointment management system designed to create an accountability safety net between patients and their trusted caregivers.
